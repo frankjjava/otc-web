@@ -1,0 +1,168 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+	<title>The OTC Framework Engine modules - compiler and executor</title>
+	<meta name="description" content="The OTC Framework Engine modules - compiler and executor">
+	<meta name=”robots” content="index, follow">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta charset="UTF-8">
+
+	<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+	<meta name="Date-Revision-yyyymmdd" content="20220417">
+	<meta http-equiv="Content-Language" content="en">
+
+	<script type="text/javascript" src="/js/jquery.min.js"></script>
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
+	<script type="text/javascript" src="/js/otc-child-pages.js"></script>
+
+</head>
+
+<body class="composite">
+
+	<div class="section">
+
+	<h3>Section 10: OTC Engine</h3>
+	<p>
+		In this section, we will look at the various components in the OTC Engine.
+		<br/>
+		<br/>
+		The OTC engine is the execution environment for your OTCS files. It consists of the below components -
+		<ol>
+			<li>OTCS Compiler, </li>
+			<li>Source-code generator, </li>
+			<li>Source-code compiler, </li>
+			<li>Token Metadata (TMD) registry, </li>
+			<li>Indexer, and </li>
+			<li>Executor.</li>
+		</ol>
+		<br/>
+		There are 4 steps in all and all 4 has to be invoked on a <b>DEV-cum-unittest</b> box. However, while promoting to 
+		other environments such as the QA or PROD, only the last step has to be invoked. The 4 steps are -
+		<br/>
+		<br/>
+		<ol>
+			<li>OTCS compilation, </li>
+			<li>Source-code compilation, </li>
+			<li>TMD registration, </li>
+			<li>Execution</li>
+		</ol>
+		<br/>
+		<ol>
+			<li><b><u>Step One : Compile OTCS files</u></b>
+			    <br/>
+				The first phase is to compile the OTCS files. The OTC Script compiler has 5 sub-components which are the 
+				typical components in any compiler -
+				<ul>
+					<li>The Lexicalizer, </li>
+					<li>The Syntax checker, </li>
+					<li>The Semantics checker</li>
+					<li>The Token metadata (TMD) generator - akin to intermediate code generator</li>
+					<li>The Source Code Generator.</li>
+				</ul>
+			    <br/>
+				The TMD files are created in this step and are used during source-code generation and during execution step. 
+			    <br/>
+			    <br/>
+				During source-code generation, there are several sub-components that kicks in to generate object-conversion 
+				source-code. As already mentioned the generated source-code are placed in the <b>"${OTC_HOME}/src"</b> folder.
+			    <br/>
+			    <br/>
+			    Please go through the <b>"org.otcframework.test.unit.OtcTest.java"</b> class to get the whole picture.
+			    <br/>
+			    <br/>
+				To compile the OTCS files, do the following –
+			    <pre>OtcsCompiler otcsCompiler = OtcsCompilerImpl.getInstance();
+otcsCompiler.compile(); </pre>
+			    <br/>
+				As already mentioned the OTC-Compiler will look for the <b>"*.otcs"</b> files under 
+				<b>"${OTC_HOME}/unittest"</b> folder	
+			    <br/>
+			    <br/>
+		    </li>
+			<li><b><u>Step Two : Source-code Compilation</u></b>
+			    <br/>
+				This step is invoked separately. This gives an opportunity to the developer to review and tweak the 
+				generated source code to do any additional processing if required before compiling it.
+			    <br/>
+			    <br/>
+				To compile the source code –
+				<pre>OtcsCompiler otcsCompiler = OtcsCompilerImpl.getInstance();
+otcsCompiler.compileSourceCode(); </pre>
+			    <br/>
+			</li>
+			<li><b><u>Step Three : TMD Registration</u></b>
+			    <br/>
+				This TMD-Registration step is automatically invoked by the OTC-Executor upon initialization and hence is not 
+				required to be explicitly invoked on other environments such as QA and PROD. 
+				<br/>
+				<br/>
+				TMD is part of the OTC's internals and so going into the details of the TMD is not required.
+				<br/>
+				<br/>
+				However, you should make note that if the OTCS compilation and source-code compilation is explicitly invoked 
+				which will happen only on a <b>DEV-cum-unittest</b> box, the TMD registration also has be invoked explicitly 
+				in order to tell the OTC-Executor to register the newly created TMDs in the TMD container. On OTC Engine 
+				start-up, if the TMD loader finds any TMD files in the <b>"${OTC_HOME}/tmd"</b> folder and the matching 
+				compiled object-conversion executables in the class-path, it will load them automatically. And that would 
+				mean that once the generated source-code are integrated into your project, there is no need to invoke this as 
+				a separate step. If there is a mismatch in the TMD files and the compiled executable such as missing compiled 
+				object-conversion code, the registration will fail. 
+				<br/>
+				<br/>
+				<b><i><u>Note:</u></b> The "*.tmd" files has to be copied from the <b>"${OTC_HOME}/tmd"</b> folder on your 
+				<b>DEV-cum-unittest</b> box to other environments such as QA and PROD. </i>
+				<br/>
+				<br/>
+				Invoking the TMD registry –
+				<br/>
+				<pre>OtcRegistry otcRegistry = OtcRegistryImpl.instance;
+otcRegistry.register(); </pre>
+				<br/>
+			</li>
+			<li><b><u>Step Four : The Executor</u></b>
+				<br/>
+				In this step, the Executor internally will first try to retrieve the registered TMD set. If it finds them, 
+				it will invoke the <b>'Indexer'</b> sub-component passing on the TMD set and the source object if applicable. 
+				The <b>'Indexer'</b> indexes all the collections if present (i.e both lists and maps). After the Indexer 
+				completes, the Executor finally invokes the compiled executable. After integrations, on other environments 
+				such as the QA and PROD, this is the only step you will have to invoke every time you want to perform an 
+				object-conversion.
+				<br/>
+				<br/>
+				There are 2 methods with different method signatures to invoke the executor. 
+				<br/>
+				<br/>
+				If the OTCS file consists of values only, (meaning there is no source object used) and so the parameters 
+				would 
+				be only 3 as shown below -
+				<br/>
+				<pre><i>Method signature:</i> 
+	execute(String namespace, Class&lt;T&gt; targetClz, Map&lt;String, Object&gt; data)
+
+<i>Ex:-</i>
+	OtcExecutor otcExecutor = OtcExecutorImpl.getInstance();
+	otcExecutor.execute("com.example", Passenger.class, null); </pre>
+				<br/>
+				If the OTCS file uses a source-object (copy-values command inclusive) then the format is as given in the 
+				below example -
+				<br/>
+				<pre><i>Method signature:</i>
+	execute(String namespace, S source-object, Class&lt;T&gt; targetClz, Map&lt;String, Object&gt; data);
+
+<i>Ex:-</i>
+	OtcExecutor otcExecutor = OtcExecutorImpl.getInstance();
+	otcExecutor.execute(null, employee-object, Passenger.class, data); </pre>
+				<br/>
+				Please note that <b>'null'</b> can be passed for the first and the last parameters which are the package-name 
+				and the Map parameters.
+			</li>
+		</ol>	
+		<br/>
+		<br/>
+		<br/>
+		<br/>
+	</div>
+</body>
+</html>

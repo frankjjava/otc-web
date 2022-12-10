@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http:www.w3.org/1999/xhtml">
+   <url>
+      <loc>https://otcframework.org</loc>
+      <lastmod>2022-07-24</lastmod>
+   </url>
+   <url>
+      <loc>https://otcframework.org/html/01-preface.html</loc>
+      <lastmod>2022-07-24</lastmod>
+   </url>
+   <url>
+      <loc>https://otcframework.org/html/02-OTC-in-1-min.html</loc>
+      <lastmod>2022-07-24</lastmod>
+   </url>
+   <url>
+      <loc>https://otcframework.org/html/03-performance-features.html</loc>
+      <lastmod>2022-07-24</lastmod>
+   </url>
+   
+<!-- BEGIN: documentation links -->
+   <url>
+      <loc>https://otcframework.org/html/documentation/01-getting-started.html</loc>
+      <lastmod>2022-07-24</lastmod>
+   </url>
+   <url>
+      <loc>https://otcframework.org/html/documentation/02-otc-editor.html</loc>
+      <lastmod>2022-07-24</lastmod>
+   </url>
+   <url>
+      <loc>https://otcframework.org/html/documentation/03-test-project.html</loc>
+      <lastmod>2022-07-24</lastmod>
+   </url>
+   <url>
+      <loc>https://otcframework.org/html/documentation/04-copying-literals.html</loc>
+      <lastmod>2022-07-24</lastmod>
+   </url>
+   <url>
+      <loc>https://otcframework.org/html/documentation/05-date-converter.html</loc>
+      <lastmod>2022-07-24</lastmod>
+   </url>
+   <url>
+      <loc>https://otcframework.org/html/documentation/06-copying-source.html</loc>
+      <lastmod>2022-07-24</lastmod>
+   </url>
+   <url>
+      <loc>https://otcframework.org/html/documentation/07-anchors.html</loc>
+      <lastmod>2022-07-24</lastmod>
+   </url>
+   <url>
+      <loc>https://otcframework.org/html/documentation/08-execute.html</loc>
+      <lastmod>2022-07-24</lastmod>
+   </url>
+   <url>
+      <loc>https://otcframework.org/html/documentation/09-overrides.html</loc>
+      <lastmod>2022-07-24</lastmod>
+   </url>
+   <url>
+      <loc>https://otcframework.org/html/documentation/10-otc-engine.html</loc>
+      <lastmod>2022-07-24</lastmod>
+   </url>
+   <url>
+      <loc>https://otcframework.org/html/documentation/11-otc-config.html</loc>
+      <lastmod>2022-07-24</lastmod>
+   </url>
+<!-- END: documentation links -->
+
+   <url>
+      <loc>https://otcframework.org/html/06-binaries-platforms-releases.html</loc>
+      <lastmod>2022-07-24</lastmod>
+   </url>
+   <url>
+      <loc>https://otcframework.org/html/07-requirements-license-issues.html</loc>
+      <lastmod>2022-07-24</lastmod>
+   </url>
+   <url>
+      <loc>https://otcframework.org/html/08-faq.html</loc>
+      <lastmod>2022-07-24</lastmod>
+   </url>
+   <url>
+      <loc>https://otcframework.org/html/09-feedback-author-contact.html</loc>
+      <lastmod>2022-07-24</lastmod>
+   </url>
+</urlset>

@@ -1,0 +1,156 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+	<title>Converting a source object using OTC scripts</title>
+	<meta name="description" content="Converting a source object using OTC scripts">
+	<meta name=”robots” content="index, follow">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta charset="UTF-8">
+
+	<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+	<meta name="Date-Revision-yyyymmdd" content="20220417">
+	<meta http-equiv="Content-Language" content="en">
+
+	<script type="text/javascript" src="/js/jquery.min.js"></script>
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
+	<script type="text/javascript" src="/js/otc-child-pages.js"></script>
+
+</head>
+
+<body class="composite">
+
+	<div class="section">
+
+		<h3>Section 6: Copying from Source Object</h3>
+		<br/>
+		In this section, we will focus on OTCS-commands to convert a source-object to a target-object.
+		<br/>
+		<br/>
+		We just learnt to use the <b>"values:"</b> property in the <b>"from:"</b> parameter of the copy command. But in order 
+		to copy values from a source-object, the <b>"objectPath:"</b> property has to be defined in the <b>"from:"</b> 
+		parameter instead of the <b>"values:"</b> property. So, the OTCS-command-block will have two OTCS-object-paths, one 
+		for the source-object (the <b>"from:"</b>) and the other for the target-object (the <b>"to:"</b>). 
+		<br/>
+		<br/>
+		For all outputs of the test-cases, please compare and analyze with the source in 
+		<b>"${OTC_HOME}/test-samples/Kronos-passenger-map.xml"</b> file.
+		<br/>
+		<br/>
+		<h4>Three categories:</h5>
+		The combinations of source and the target object-path can be classified into 3 main categories as explained below-
+		<br/>
+		<br/>
+		<ol>
+			<li><b>Flat paths:</b>
+				<br/>
+				Flat-paths are the OTCS-object-path combinations of source and target where both the object-paths do not 
+				have collection-tokens in them. Here is an example –
+				<br/>
+				<br/>
+				<i>Test case: <b>"${OTC_HOME}/pretest/cpysource_flatpath"</b>.</i>
+				<br/>
+				<pre>- copy:
+    id: CP1
+    from:
+      objectPath: travelerDetailType.name.surname.value
+    to:
+      objectPath: mainPassengerName</pre>
+				<br/>
+				When you execute this OTCS-command-block, the output will be as shown here.
+				<br/>
+				<br/>
+				<img alt="OTC script copy command to copy from source to target with flat object paths" class="otcImage" 
+					src="./images/doc-Flatpaths-ex.png" width="400" height="75" />
+				<br/>
+				<br/>
+			</li>
+			<li><b>Mixed paths:</b>
+				<br/>
+				Mixed-paths are scenarios where one of the 2 object-paths has collection-tokens in their path while 
+				the other one has a flat-path. Below is an example where only one of them have collection-tokens in 
+				the object-path which is highlighted - 
+				<br/>
+				<br/>
+				<i>Test case: <b>"${OTC_HOME}/pretest/cpysource_mixedpath"</b>.</i>
+				<br/>
+				<pre>- copy:
+    id: CP1
+    from:
+      objectPath: travelerDetailType.name.surname.value
+    to:
+      objectPath: travelers.traveler[*].anonymousTraveler[*].name.given[*].value</pre>
+				<br/>
+				When you execute this OTCS-command-block, the output of the object created in XML format will be as shown 
+				below.
+				<br/>
+				<br/>
+				<img alt="OTC script copy command to copy from source to target with one of the object paths with collections" 
+					class="otcImage" src="./images/doc-Mixedpaths-ex.png" width="370" height="175" />
+				<br/>
+				<br/>
+			</li>
+			<li><b>Collection paths:</b>
+				<br/>
+				Collection-paths are scenarios when both the object-paths have collection tokens in them. Below is an 
+				example where both the object-paths have collection-tokens in their paths -
+				<br/>
+				<br/>
+				<i>Test case: <b>"${OTC_HOME}/pretest/cpysource_collection"</b>.</i>
+				<br/>
+				<pre>- copy:
+    id: CP1
+    from:
+      objectPath: dataLists.passengerList.passenger[*].identityDocuments[*].visas[*].visaType
+    to:
+      objectPath: travelers.traveler[*].customObjectsMap[*,*]&lt;K&gt;.name.given[*].value</pre>
+			
+				When you execute this OTCS-command-block, the output of the object created in XML format will be as shown 
+				below.
+				<br/>
+				<br/>
+				<img alt="OTC script copy command to copy from source to target with both object paths having collections" 
+					class="otcImage" src="./images/doc-Collectionpaths-ex.png" />
+			</li>
+		</ol>
+		<br/>
+		<h4>Type rules:</h4>
+		While creating a target object, there are some rules that you should bear in mind.
+		<br/>
+		<br/>
+		<ol type="a">
+			<li>Ideally the leaf-node should be a scalar type such as String, primitive types or wrapper types.</li>
+			<li>However, if it is a composite type, then the leaf-nodes of the source should be of the same type or 
+				a sub-type of the target field type.</li>
+			<li>If the target's leaf-node field type is any of the primitive or wrapper types, then the type of the 
+				source should be either the same type or a String type that can be parsed without errors.</li>
+			<li>If the target's leaf-node field-type is a boolean or Boolean, then the type of the source should be 
+				either the same type or a String type with the value 'true' or 'false'.</li>
+		</ol>
+		<br/>
+		<h4>Copying to Maps</h4>
+		For copying values from or to Dictionaries (Maps), you need to follow the same steps just as outlined under the 
+		section. <b>"Copying Literals"</b> under the heading <b>"Copying literals to Maps:"</b>. The only difference is the 
+		use of <b>"objectPath:"</b> property in the <b>"from:"</b> parameter in contrast to the <b>"values:"</b> property
+		we saw in the earlier example.
+		<br/>
+		<br/>
+		Kindly note that OTCS is very flexible allowing you to copy into a dictionary from just anywhere in the source and 
+		vice-versa. Meaning there are <b><u>NO RESTRICTIONS</u></b> such as mandating you to copy only from a dictionary 
+		in the source to another dictionary in the target. Examples given under the section <b>"Anchors"</b> and the several 
+		test cases under <b>"${OTC_HOME}/pretest"</b> folder should provide you with enough clarity on constructing 
+		dictionaries.
+		<br/>
+		<br/>
+		<h4>Copying to Enums and Date fields</h4>
+		Here too the only difference is the use of <b>"objectPath:"</b> property in the <b>"from:"</b> parameter instead of 
+		the <b>"values:"</b> property. 
+		<br/>
+		<br/>
+		<br/>
+		<br/>
+		<br/>
+	</div>
+</body>
+</html>

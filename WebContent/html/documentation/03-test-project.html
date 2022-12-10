@@ -1,0 +1,233 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+	<title>Test project in The OTC Framework - unit testing OTC scripts & source code generation</title>
+	<meta name="description" content="Test project in The OTC Framework - unit testing OTC scripts & source code generation">
+	<meta name=”robots” content="index, follow">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta charset="UTF-8">
+
+	<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+	<meta name="Date-Revision-yyyymmdd" content="20220417">
+	<meta http-equiv="Content-Language" content="en">
+
+	<script type="text/javascript" src="/js/jquery.min.js"></script>
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
+	<script type="text/javascript" src="/js/otc-child-pages.js"></script>
+
+</head>
+
+<body class="composite">
+
+	<div class="section">
+		<h3>Section 3: The Test project</h3>
+		In the previous sections we have learnt about creating the OTCS files. In this section, we will learn how to use the 
+		downloaded test-project to execute those OTCS files, generate the object-conversion source code and execute them.
+		The <b>"Getting Started"</b> section covered details on setting up the <b>"Test project"</b> available in the 
+		download.
+		<br/>
+		<br/>
+		<h4>The test classes and sample classes:</h4> 
+		There are a few test classes with each of them having a different focus and a couple of example classes -
+		<ol type="a">
+			<li>The most important one is the <b>"org.otcframework.test.unit.OtcTest.java"</b> which is the main Junit-test 
+				class used for Unit testing. You should use this class to compile the OTCS files and generate all your 
+				required object-conversion code after updating the test method appropriately.
+			</li>
+			<li>The <b>"org.otcframework.test.benchmark.otc.JmhTest.java"</b> class tests OTCS's performance.</li>
+			<li>The <b>"org.otcframework.test.benchmark.mapstruct.JmhTest.java"</b> tests the Mapstruct framework's 
+				performance.
+			</li>
+			<li>There are a few example classes from the <b>"otc-test-schema"</b> project used in the test-case OTCS 
+				files.</li>
+			<li>One of them is the <b>"otcframework.test.converter.TestConverter.java"</b> used as an example for use while 
+				testing OTCS's <b>"execute"</b> command.
+			</li>
+			<li>The other one is the <b>"otcframework.test.helper.TestFactoryHelper.java"</b> in the  package used as an
+				example while trying out test cases on <b>"Overrides"</b>.</li>
+			<li>The <b>"com.kronos.airlines.dto.KronosAirlinePassenger"</b> and the 
+				<b>com.athena.airlines.dto.AthenaAirlinePassenger</b> and their child classes which are used as source and 
+				target types in the test cases.</li>
+			<li>All these classes are annotated with JAXB annotations only for the purpose of generating XML output for 
+				demonstration purposes and to validate them with the test cases. This has got nothing to do with the OTC 
+				framework.</li>
+		</ol>
+		<br />
+
+		<h4>Unit Test class:</h4>
+		<ol type="a">
+			<li>The <b>"org.otcframework.test.unit.OtcTest"</b> Junit-test class has a test method which first calls 
+				the <b>"compileAndDeploy()"</b> method.
+			</li>
+			<li>This method first calls the <b>"compile()"</b> method on the OTCS-Compiler to compile the OTCS files.</li>
+			<li>When the <b>"compile()"</b> method is called, the OTCS-compiler scans the <b>"${OTC_HOME}/otcs-unittest/"</b> 
+				folder and sub-folders, compiles all the <b>"*.otcs"</b> files and generates the source-code.
+			</li>
+			<li>The test class then calls the <b>"compileSourceCode()"</b> method on the compiler to compile the generated 
+				source code.
+			</li>
+			<li>Once the <b>"compile()"</b> method executes successfully, you will notice the generated source code files 
+				are placed in the <b>"${OTC_HOME}/src"</b> folder.
+			</li>
+			<li>Once compiled, the <b>".class"</b> files are placed in the <b>"${OTC_HOME}/target"</b> folder.</li>
+			<li>Next it calls the <b>"register()"</b> method to register some metadata files generated for internal use by 
+				the engine.
+			</li>
+			<li>As already mentioned you will not be required to call all the above method in your project after 
+				integration. Once integrated, you will have to call only the <b>"otcExecutor.execute(...)"</b> method from 
+				within your project.
+			</li>
+			<li>Finally the test class calls the <b>"execute()"</b> method passing the required parameters.</li>
+			<li>After the conversion, the test class invokes the JAXB's marshaler to generate the output in XML format.</li>
+		</ol>
+		<br />
+
+		<h4>OTCS Files:</h4>
+		A few points about the OTCS files used as test cases in the sections. There are 41 test-case scenarios in the OTCS 
+		files situated in the <b>"${OTC_HOME}/otc-pretest"</b>
+		<ol type="a">
+			<li>OTCS object-path mapping combinations of source and target in the sections were created to cover as many 
+				test scenarios as possible.
+			</li>
+			<li>So, sanity of the mappings does not deserve a focus. So please focus on the mapping combinations scenarios 
+				only in the test cases and not on the sanity of the mappings.</li>
+			<li>The <b>"${OTC_HOME}/otc-pretest"</b> folder is like only a store for all the OTCS files.</li>
+			<li>Whenever you want to unit-test a specific OTCS file, copy the file or the folder containing the OTCS file 
+				to <b>"${OTC_HOME}/otc-unittest"</b> folder.</li>
+			<li>Once a OTCS file is unit-tested, move them to the <b>"${OTC_HOME}/otc-tested"</b> folder. The reason we are 
+				moving them out after testing is to avoid repeated compilation of the already tested OTCS files on every 
+				test iteration.</li>
+		</ol>
+		<br />
+
+		<h4>Package structure:</h4>
+		To have the OTC framework generate the source code files to belong to any package structure, create the folder
+		structure accordingly matching the package structure you desire.
+		<br/>
+		<br/>
+
+		<h4>The DTOs:</h4> 
+		JAXB objects created from WSDL/XSD are used as data-objects in the test cases. So here are some points on the DTOs 
+		used for testing.
+		<ol type="a">
+			<li>The downloaded file contains a Maven project named <b>"otcs-test-schema"</b> which contains the DTOs 
+				referred to in all our examples and test-cases in these tutorials. The test-project has a dependency on this 
+				schema project. Import this project into your IDE and build it. Refer to these DTOs for a better 
+				understanding while doing the exercises. 
+			</li>
+			<li>The compiled <b>".jar"</b> file with these DTOs are placed in <b>"${OTC_HOME}/lib"</b> folder.</li>
+			<li>It is created from a schema related to airline travel domain.</li>
+			<li>The schema contains all the required classes representing 2 different mock airlines named Kronos airlines 
+				and Athena airlines.</li>
+			<li>The DTOs are annotated with JAXB components for the purpose of generating the XML output in the examples to 
+				help in demonstration only. But, the OTC Framework does not have any requirements for any such annotations.
+			</li>
+			<li>The original DTOs were updated with a few additional fields repeated in a few classes with the objective to 
+				cater to the different test scenarios only. So kindly ignore the sanity of such updates.
+			</li>
+			<li>To run tests with data-objects related to your project, package them into a <b>".jar"</b> file and copy it 
+				to the <b>:"${OTC_HOME}/lib"</b> folder. You need to do this because the OTCS-Editor looks for them in this 
+				folder location.
+			</li>
+		</ol>
+		<br />
+
+		<h4>Source Object XML:</h4> 
+		Here is some information about the source object used in all the examples -
+		<ol type="a">
+			<li>The <b>"${OTC_HOME}/test-samples/Kronos-passenger-map.xml"</b> has the test-data.</li>
+			<li>The object KronosAirlinePassenger which is used as the source object in the majority of the test cases is 
+				created from this file.
+			</li>
+			<li>Having an understanding of this XML will help you to compare and analyze the output generated by the 
+				test-cases in the sections.
+			</li>
+			<li>While executing the examples given in the sections, please refer to this file to compare with the generated 
+				output.
+			</li>
+		</ol>
+		<br />
+
+		<h4>Additional info:</h4> 
+		Below are some additional important information. 
+		<ol type="a">
+			<li>The last method parameter.
+				<ol type="i">
+					<li>All classes implementing the above interfaces and all OTCS generated classes takes a java.util.Map 
+						as the last method parameter.</li>
+					<li>When will you need this ? – when you are integrating OTC in your software project, let us say you 
+						already have another object before invoking the executor's execute method. You want to make this 
+						object available in the generated classes which you may want to modify and do some additional 
+						processing, or, make the object available in a custom converter that you write, then you may put 
+						such data in the map and then call the <b>"execute"</b> method on the Executor passing this map as 
+						the last parameter. 
+						<br/>
+						Now, that such objects/data are available in the OTCS generated classes or the custom converter 
+						which you write, you may retrieve them and use it for whatever processing you may want to do.</li>
+					<li>Note: Never add state (instance level objects) to the generated source code and use them as using 
+						them in the code may cause undesired results. Instead you can choose this option of passing the 
+						values in the map.</li>
+				</ol>
+				<br />
+			</li>
+			<li>There are 2 interfaces which you should know.
+				<ol type="i">
+					<li>The OTCS generated entry-class implements the <b>"org.otcframework.common.executor.CodeExecutor"</b> 
+						interface.
+					</li>
+					<li>Any custom converter you write should implement the 
+						<b>"org.otcframework.common.converter.OtcConverter"</b> interface.
+					</li>
+				</ol>
+				<br />
+			</li>
+		</ol>
+		<i><b><u>Note:</u></b> After unit testing, if you happen to delete the generated source files, you will also have to 
+			delete the .tmd files from the <b>"${OTC_HOME}/tmd"</b> folder.</i>
+		<br/>
+		<br/>
+		<h4>Try it out:</h4>
+			In this exercise we will learn to unit test the OTCS files which are provided in 
+			<b>"${OTC_HOME}/otc-pretest"</b> folder and referred to in the various sections.
+		<ol>
+			<li>Start your file-manager and copy the <b>"${OTC_HOME}/otc-pretest/cpyvalues1"</b> folder to 
+				<b>""${OTC_HOME}/otc-unittest"</b> folder.</li>
+			<li>The <b>"cpyvalues1"</b> has a file named <b>"com.athena.airlines.dto.AthenaAirlinePassenger.otcs"</b>.</li>
+			<li>Open the <b>"OtcTest.java"</b> class.</li>
+			<li>In the <b>"runTest()"</b> method locate the line <b>"otcsCommandType = ...."</b>.</li>
+			<li>Ensure it is initialized to <b>"OTCS_COMMAND_TYPE.FROM_VALUES"</b> as in <b>"otcsCommandType = 
+				OTCS_COMMAND_TYPE.FROM_VALUES;"</b>.</li>
+			<li>The call to the appropriate <b>"execute(...)"</b> method is based on a condition which you can see in the 
+				code where it checks for the value of <b>"otcsCommandType"</b>.</li>
+			<li>Next set the package-name variable ("pkg") appropriately. If the OTCS file does not belong to any package 
+				then set this value to <b>"null";</b></li>
+			<li>Locate the line <b>"pkg = ..."</b>.</li>
+			<li>Initialize it to <b>'pkg = "cpyvalues1";'</b> - this is the package name (folder which you just copied).</li>
+			<li>There are 2 different versions of the execute methods with varying parameters where one does not take 
+				a source object while the other does.</li>
+			<li>Run the Junit test class - in your IDE right click anywhere on your OtcTest.java class which you have
+				opened and select <b>"Run As Junit"</b> option.</li>
+			<li>The test method compiles the <b>"*.otcs"</b> file, generates and compiles the source-code, executes it
+				and marshals the created target object AthenaAirlinePassenger to XML and prints it on the console.</li>
+			<li>After the <b>"runTest()"</b> completes successfully, you may want to review the generated object conversion
+				source code.</li>
+			<li>Navigate to <b>"$ <b>"${OTC_HOME}/src"</b> folder and you should be able to see the generated source-code 
+				files.
+			</li>
+			<li>Next try out the same steps for another test case.</li>
+			<li>First delete the <b>"/cpyvalues1"</b> fold"</b>  under <b>"${OTC_HOME}/otc-unittest"</b> - we do not want 
+				the OTC compiler to unnecessarily spend time compiling a <b>".otcs"</b> file and generate source code once 
+				again for which we don't have to any longer.</li>
+			<li>This time copy the <b>"${OTC_HOME}/otc-pretest/cpysource_mixedpath"</b> .</li>
+			<li>Remember to change 'otcsCommandType = OTCS_COMMAND_TYPE.FROM_SOURCE_OBJECT;' and 
+				<b>'pkg = "cpysource_mixedpath;"'</b>.</li>
+		</ol>
+		<br/>
+		<br/>
+		<br/>
+		<br/>
+	</div>
+</body>
+</html>

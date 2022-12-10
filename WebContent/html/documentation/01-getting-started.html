@@ -1,0 +1,285 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+	<title>Getting Started with the OTC framework for object conversions</title>
+	<meta name="description" content="Getting Started with the OTC framework for object to object conversions">
+	<meta name=”robots” content="index, follow">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta charset="UTF-8">
+
+	<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+	<meta name="Date-Revision-yyyymmdd" content="20220724">
+	<meta http-equiv="Content-Language" content="en">
+
+	<script type="text/javascript" src="/js/jquery.min.js"></script>
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
+	<script type="text/javascript" src="/js/otc-child-pages.js"></script>
+
+</head>
+
+<body class="composite">
+
+	<div class="section">
+		<h3>Section 1: Getting started</h3>
+		<br /> 
+		Getting started with OTC is very simple and easy with just 4 main stages. There are a couple of activities to be 
+		done on your DEV environment to implement, unit test and integrate OTC, but only one of those activities on all 
+		other environments from QA to the PROD.  
+		<br />
+		<br />
+		There are <b><i>"Try it out:"</i></b> sub-sections given for practice under various sections as you proceed through 
+		this document. I would recommend you to do it without fail so that it becomes easy for you to flow along.
+		<br />
+		<br /> 
+		This section gives a high level view of the the steps involved in implementing OTC. The details are 
+		elaborated as we proceed. Very briefly at a high level, below are the activities you do - 
+		<br />
+		<br />
+		
+		<h4>Stage 1: Setup and build the OTC script file (on DEV environment only)</h4>
+		<ol>
+			<li>Get the <i><b>"otc.zip"</b></i> file. (one time)</li>
+			<li>Setup <i><b>"OTC_HOME"</b></i> environment variable. (one time)</li>
+			<li>Start the <i><b>"otceditor.jar"</b></i> web-application.</li>
+			<li>Start the OTC Script editor UI on the browser.</li>
+			<li>Create all required OTCS command blocks using the UI.</li>
+			<li>Save the OTC script file.</li>
+		</ol>
+		<br />
+
+		<h4>Stage 2: Unit testing (DEV environment)</h4>
+		<ol>
+			<li>Import and setup the <i><b>"OTC-test"</b></i> Maven project in your IDE. (one time)</li>
+			<li>Compile the OTCS file.</li>
+			<li>Execute the generated code.</li>
+		</ol>
+		<br />
+
+		<h4>Stage 3: Integration (DEV environment)</h4>
+		<ol>
+			<li>Copy the <i><b>"*.java"</b></i> files generated in the above step into your project.</li>
+			<li>If the integration environment is different from the one used in the above step, then copy the 
+				<i><b>"*.tmd"</b></i> files generated during testing to the target environment.
+			</li>
+			<li>Add the dependencies to the OTC executor module in your project. 
+				<br/>
+			</li>
+			<li>Invoke OTC's Executor.
+			</li>
+		</ol>
+
+		<br/>
+		<h4>Stage 4: Promote to QA / Production</h4>
+		Since you would have already unit-tested, integrated and packaged the generated code and the OTC-Executor invocation 
+		in your application, there is only one step to be done at this stage and that is to copy the <b>"*.tmd"</b> files to 
+		the below folder on the target environments. 
+		<br />
+		<br />
+		<i><b>"${OTC_HOME}/tmd"</b></i>
+		<br/>
+		<br/>
+		<br/>
+		<h4>Detailed steps</h4>
+		<br/>
+		Now lets go into the details on some of the points mentioned above -
+		<br/>
+		<ol>
+			<li><h5>Setting-up OTC_HOME: </h5>
+				<ol type="a">
+					<li>Download the <b><i>"otc.zip"</b></i> file and extract it. You will find 3 folders and a web-app as shown 
+						below.
+						<br/>
+						<img alt="OTC Home folder" class="otcImage" src="./images/doc-otc-home-folder.png" width="150" 
+							height="100" />
+					</li>
+					<li>Copy the <b><i>"otc-home"</b></i> folder to a desired location in your hard-drive.</li>
+					<li>Setup the <b><i>"OTC_HOME"</b></i> environment variable pointing to the <b><i>"otc-home"</b></i> 
+						folder.
+					</li>
+				</ol>
+				<br/>
+			</li>
+			<li><h5>Start the OTC Script Editor UI:</h5>
+				<ol type="a">
+					<li>After extracting the <b><i>"otc.zip"</i></b> file, open a terminal window and CD into the directory 
+						containing the file <b><i>"otceditor.jar"</i></b></li>
+					<li>Start the <b><i>"otceditor.jar"</i></b> by typing</li>
+					<pre><b><i>java -jar otceditor.jar</i></b></pre>
+					<li>Wait for a few seconds for the OTCS editor startup to complete.</li>
+					<li>Open your favorite browser and enter
+					<pre><b><i>http://localhost:1674</i></b></pre>
+					You should see the OTCS Editor UI on the browser and we are all set and ready to go ahead with creating 
+					the OTCS files. The next section on the <b>"OTCS Editor"</b> provides you with more details on this.
+					</li>
+				</ol>
+				<br/>
+			</li>
+			<li><h5>Unit-testing:</h5>
+				The OTCS file you create has to be tested. There are several test-cases provided in the download. Do the below to setup your environment for unit-testing -
+				<br/>
+				<br/>
+				The downloaded file has a Maven project for unit-testing purposes. After you create the OTCS files for your 
+				project, you should first run the <b><i>"org.otcframework.test.unit.OtcTest"</i></b> in this test project which 
+				will trigger the OTC-compiler to generate all the object conversion source-code and also execute them and 
+				display the results. 
+				<br/>
+				<br/>
+				But to execute the generated object conversion source-code you also need to provide a source object loaded with 
+				values. For the test-cases which are accompanied in the download, XML files are provided with data from which 
+				the source object is created and populated. The test-cases in <b>"${OTC_HOME}/pretest"</b> folder refers to 
+				types present in the <b>"otc-test-schema"</b> project.
+				<br/>
+				<br/>
+				But your case may be different. In such a case you may update the code in <b>OtcTest.java</b> file to change 
+				the way you want to create and populate the source object.
+				<br/>
+				<br/>
+				Once you are satisfied with the unit testing results, then you may integrate the files generated by the 
+				OTC-Compiler into your main software project.
+				<br/>
+				<br/>
+				Now let us setup these projects -
+				<br/>
+				<ol type="a">
+					<li>After extracting the downloaded file, you will find 2 Maven projects by name <b><i>"otc-test"</i></b>
+					 	with a few test-classes and the <b><i>"otc-test-schema"</i></b> with all the DTOs used in these 
+					 	sections.
+					 </li>
+					<li>Import both the <b><i>"otc-test"</i></b> and the <b><i>"otc-test-schema"</i></b> projects into your IDE 
+						and build them.
+						<br/>
+						The <b><i>"otc-test"</i></b> project has a dependency on the <b><i>"otc-test-schema"</i></b> project.
+					</li>
+					<li>The <b><i>"otc-test"</i></b> project has a few test classes. There are a couple of JMH test classes and 
+						a Junit test class. A detailed explanation on the Junit test class is covered in the section titled 
+						<b><i>"Test Project"</i></b>.
+					</li>
+				</ol>
+				<br/>
+				You should review the code of the Junit test class to familiarize yourself with the steps.
+				<br/>
+				<br/>
+			</li>
+			<li><h5>Integration:</h5>
+				Next you have to integrate the generated code and the TMD files into your software project. Below are the 
+				integration steps:
+				<br/>
+				<ol type="a">
+					<li>Add the OTC binary dependencies in your project.</li>
+		    		<li>Please check for the latest version of the binaries on Maven central repository and specify that in 
+		    			your dependency script.</li>
+					<li>And then copy the generated <b><i>"*.java"</i></b> files into the right package in your project's 
+						source code folder in your IDE.</li>
+					<li>If your software development environment is different from the environment where the OTCS files were 
+						unit-tested, then you have to copy the <b><i>"*.tmd"</i></b> files from <b><i>"${OTC_HOME}/bin"</i></b> 
+						folder on the OTCS tested environment to the same path on the new environment.</li>
+					<li>While promoting to the QA and the PROD environments, only the <b><i>"*.tmd"</i></b> files has to be 
+						copied as you would have already integrated the generated source code files and packaged it.</li>
+				</ol>
+			</li>
+		</ol>
+		<br/>
+		<h4>Try it out:</h4>
+		<ol>
+			<li>Download the <b><i>"otc.zip"</b></i> file by clicking on the <b><i>"Binaries..."</b></i> link on the left menu 
+			at the top of this page and enter the required details.</li>
+			<li>Extract the downloaded file and copy the <b><i>"otc-home"</b></i> folder to a desired location.</li>
+			<li>Setup the <b><i>"OTC_HOME"</b></i> environment variable pointing to this folder.</li>
+			<li>Copy the <b><i>"otc-test"</i></b> and the <b><i>"otc-test-schema"</i></b> projects to a desired location.</li>
+			<li>Start your favorite IDE.</li>
+			<li>Import both <b><i>"otc-test"</i></b> and the <b><i>"otc-test-schema"</i></b> projects into your IDE 
+			and build them.</li>
+			<li>Start the editor: First copy the <b><i>"otceditor.jar"</i></b> to a desired location.</li>
+			<li>Start the terminal window and <b><i>"cd"</i></b> into the directory where you have copied this file.</li>
+			<li>Type <b><i>java -jar otceditor.jar</i></b> and press ENTER.</li>
+			<li>Start your browser and type <b><i>http://localhost:1674</i></b></li>
+		</ol>
+		<br/>
+		<h4>Terminologies:</h4>
+		<br/>
+		Going forward it is required to be familiar with some of the terminologies used. Below is a short list:
+		<br/>
+		<br/>
+		<ol>
+			<li>
+				<b>OTC and OTCS:</b> OTC is the acronym of <b><i>Object Tree Converter</i></b>, and OTCS is the acronym 
+				of <b><i>Object Tree Conversion Script</i></b>. 
+			    <br/>
+			</li>
+			<li><b>The OTC object-path (aka OTC-Chain):</b> OTCS-object-path is the representation of a path in an 
+				object-tree beginning from a child-node directly under the root-class all the way to a leaf-node. 
+				The object-path consists of all the field-names in the object-path with some additional characters and 
+				notations delimited by dots. 
+				<br/>
+				<br/>
+				Below is an example:
+				<br/>
+				<pre><b><i>travelers.traveler[*].pnrs[*,*]&lt;V&gt;.name.given[*].value</i></b></pre>
+				<br/>
+				Here we see that the chain beginning with <b><i>"travelers"</i></b>, is one of the children of the root-class -
+				you may want to look up the source code of <b><i>"AthenaAirlinePassenger"</i></b>. You can notice that this is 
+				followed by the different field-names in the path all the way up to the leaf-node named <b><i>"value"</i></b>.
+				<br/>
+				<br/>
+				<i><u><b>Note:</b> An OTC-object-path will always have a pair, wherein the other part will be either another 
+				OTC-object-path or a list of values.</u></i>
+		    	<br/>
+		    	<br/>
+			</li>
+			<li>
+				<b>OTC-tokens:</b> All the text between the dots in an OTC-object-path are called OTC-tokens. These tokens 
+				represent the field-names defined in the class. Additionally few specific notations are used in certain 
+				scenarios along with the field-names to represent collections. 
+		    	<br/>
+		    	<br/>
+				Below are the details -
+				<ol type="a">
+					<li><u>List notation:</u> When a token is suffixed with a list notation which is 
+						<b><i>"[*]"</i></b> as seen in <b><i>".traveler[*]."</i></b> in the above example, then such a 
+						field is either an - 
+						<ol type="i">
+							<li>Array, or a</li>
+							<li>List, or a </li>
+							<li>Set.</li>
+						</ol>
+				    	<br/>
+					</li>
+					<li><u>Dictionary notation:</u> A <b><i>"[*,*]"</i></b> notation suffix represents a dictionary (map). 
+						But since each entry in a dictionary has a key and a value pair, they are denoted differently as 
+						explained below.
+				    	<br/>
+				    	<br/>
+					</li>
+					<li><u>Dictionary key notation:</u>  To reference a key in the dictionary, a <b><i>"&lt;K&gt;"</i></b> 
+						notation is used as a suffix to the dictionary-notation as in <b><i>"[*,*]&lt;K&gt;"</i></b>. 
+				    	<br/>
+				    	<br/>
+					</li>
+					<li><u>Dictionary value notation:</u> To reference a value in the dictionary, a <b><i>"&lt;V&gt;"</i></b> 
+						notation is used as a suffix to the dictionary-notation as in <b><i>"[*,*]&lt;V&gt;"</i></b>. In the 
+						OTC-object-path example given above we notice that it has a dictionary-value notation as seen in 
+						<b><i>".pnrs[*,*]&lt;V&gt;."</i></b>.
+					</li>
+				</ol>
+				<br/>
+				<br/>
+			</li>
+			<li>
+				<b>Token-path:</b> A token-path is a subset of the OTC-object-path beginning from the 1st token. Its a 
+				path to a specific OTC-token in the OTC-object-path. A token-path in an OTCS file is identified by the 
+				property name <b><i>"tokenPath:"</i></b> which is covered under another section.
+				<br/>
+				<br/>
+				<i><b>Note:</b> A token-path could even be the entire OTC-object-path depending on need; more on 
+				this in a later section.</u></i>
+			</li>
+		</ol>
+		<br/>
+		<br/>
+		<br/>
+		<br/>
+	</div>
+</body>
+</html>

@@ -1,0 +1,309 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+	<title>Copying Literals in OTC scripts</title>
+	<meta name="description" content="Copying Literals in OTC scripts">
+	<meta name=”robots” content="index, follow">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta charset="UTF-8">
+
+	<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+	<meta name="Date-Revision-yyyymmdd" content="20220417">
+	<meta http-equiv="Content-Language" content="en">
+
+	<script type="text/javascript" src="/js/jquery.min.js"></script>
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
+	<script type="text/javascript" src="/js/otc-child-pages.js"></script>
+
+</head>
+
+<body class="composite">
+
+	<div class="section">
+		<h3>Section 4: Copying literals</h3>
+		In this section, we will learn OTCS's "copy" command. 
+		<br/>  
+		<br/>  
+		There are 2 variants of OTCS's copy command.
+		<ul>
+			<li>Copying literals (values)</li>
+			<li>Copying from source object</li>
+		</ul>
+		We will focus on the 1st version of the copy command by providing only values, i.e, without using a source-object.
+		<br/>  
+		<ol>
+			<li><h4>Example of the Copy-literals command:</h4>
+			We will start with an example of the <b>"copy:"</b> command to create an object by directly providing values. 
+			To create such an object, the <b>"from:"</b> parameter should have the <b>"values:"</b> property as shown here - 
+			<br/>
+			<br/>
+			<i>Test case: <b>"${OTC_HOME}/pretest/cpyvalues1"</b>.</i>
+			<br/>
+			<pre>otcsCommands:
+- copy:
+    id: CP1
+    from:
+      values:
+      - Elon Musk
+    to:
+      objectPath: travelerDetailType.name.surname.value
+    factoryClassName: CP1</pre> 
+    		<br/>
+			This is an example with the minimum set of parameters for the copy command.
+			<br/> 
+			<br/> 
+			The <b>"values:"</b> property is an array and so allows you to specify a list of values. The <b>"to:"</b> 
+			parameter has the <b>"objectPath:"</b> property and the compiler generates code to create all the objects 
+			in the object-path after null checks for each child in the path. 
+			<br/> 
+			<br/> 
+			Here is the output in XML of the object that was created by this example. 
+			<br/> 
+			<br/> 
+			<img alt="OTCS script copy command to copy literal values" class="otcImage" 
+				src="./images/doc-CopyValues-flat-ex.png" width="300" height="170" />
+			<br/> 
+			<br/> 
+			Please note that in the above example, you do not notice the leaf-node field name <b>"value"</b>. That has got 
+			nothing to do with OTC but with the XML marshaller which do not marshal the field name in the output when 
+			certain field-names are annotated with specific JAXB annotations. However if you produce a JSON output instead, 
+			you will see the fieldname <b>"value"</b> as well produced by the JSON marshaller.
+			<br/> 
+			<br/> 
+		</li>
+		<li><h4>Copying literals to list / set types:</h4>
+			<i>Test case: <b>"${OTC_HOME}/pretest/cpyvalues2"</b>.</i>
+			<br/>
+			<br/>
+			Here is an example OTCS fragment of copying values to object-paths containing collections.
+			<br/>
+			<pre>- copy:
+    id: CP1
+    from:
+      values:
+      - Economy
+      - Business
+    to:
+      objectPath: dataLists.passengerList.passenger[*].identityDocuments[*].visa.visaType
+    factoryClassName: CP1</pre>
+			<br/>
+			The OTCS object-path in this example consists of collection-type OTCS tokens indicating the target object-path 
+			contains collection-types. When the OTCS-Compiler encounters the 3rd and 4th level tokens <b>"passenger[*]"</b> 
+			and <b>"identityDocuments[*]"</b> during code generation, it creates ArrayList's as they are of 
+			<b>java.util.List</b> interface type in the source-code of the DTO class. In the resulting target object 
+			created by this copy command which is shown below in XML output, you can notice that there are 2 members in the 
+			<b>"identityDocuments[*]"</b> collection due to the fact that two values were provided in the <b>"values:"</b> 
+			property.
+			<br/>
+			<br/>
+			<img alt="OTCS script copy command to add members in collections" class="otcImage" 
+				src="./images/doc-CopyValues-list-ex.png" width="350" height="250" />
+			<br/>
+			<br/>
+			Below is a list of default concrete types for 4 of the collection-type interfaces.
+			<ol type="a">
+				<li>java.util.List defaults to java.util.ArrayList</li>
+				<li>java.util.Set defaults to java.util.HashSet</li>
+				<li>java.util.Queue defaults to java.util.LinkedList</li>
+				<li>java.util.Map defaults to java.util.HashMap</li>
+			</ol> 
+			<br/>
+			This can however be overridden with your preferences which is covered in another section titled 
+			<b>"Overrides"</b>.
+			<br/>
+			<br/>  
+		</li>
+		<li><h4>Copying literals to Dictionaries (Maps):</h4>
+			Next, we shall see how to add entries into a map. This has to be done in 2 steps following a specific order 
+			since a map-entry has a key and a value. A map value cannot be added without a key. So it is required to add a 
+			map-key as a first step and then add the map-value any time later.  
+			<br/>
+			<br/>
+			<i>Test case for both Step 1 and Step 2 given below: <b>"${OTC_HOME}/pretest/cpyvalues3"</b>.</i>
+			<br/>
+			<br/>
+			<h5>Step-1: Inserting map-keys</h5>
+			Here is an example of the OTCS command-block for the first step of adding a key into a map.
+			<pre>- copy:
+    id: CP1
+    from:
+      values:
+      - F31
+      - F32
+    to:
+      objectPath: travelers.traveler[*].anonymousTravelerMap[*,*]&lt;K&gt;</pre>
+			<br/>
+			This example is something similar to the one we already saw earlier except that it has a map-key notation in the 
+			OTCS-object-path. You can notice that there are 2 collections in this OTCS-object-path. In the map-key notation 
+			<b>"anonymousTravelerMap[*,*]&lt;K&gt;"</b>, the reference is made to the map-key with the suffix 
+			<b>"&lt;K&gt;"</b>. The map-key is a scalar type i.e. String and this command creates 2 map entries with the keys 
+			<b>"F31"</b> and <b>"F32"</b> passed in the <b>"values:"</b> property. 
+			<br/>
+			<br/>
+			<h5>Step-2: Inserting map-values</h5>
+			Here is an example OTCS command of the 2nd step of adding a value into a map.
+			<pre>- copy:
+    id: CP1
+    from:
+      values:
+      - Pondy Prem
+      - Rajesh S
+    to:
+      objectPath: travelers.traveler[*].anonymousTravelerMap[*,*]&lt;V&gt;.given[*].value</pre>
+			<br/>
+			In this 2nd step example, there are 2 values to be added as map values. In the token 
+			<b>"anonymousTravelerMap[*,*]&lt;V&gt;"</b>, the reference is made to the map-value with the suffix 
+			<b>"&lt;V&gt;"</b>. Looking at the source-code of this DTO class in the schema project, you will find that the 
+			map-value is a composite-type having a child object by the name <b>"given"</b> which is of a collection type. 
+			The members of this collection-type are also composite-type <b>"TravelerSummaryType.Name.Given"</b>. The member 
+			has a leaf-node by name <b>"value"</b>, which is of the scalar type and to which the values are set. Since there 
+			are two values, the collection represented by the token <b>"given[*]"</b> will have 2 entries as its members.
+			<br/>
+			<br/>
+			If in case you are wondering how the integrity of the order is ensured, not to worry. It is taken care of by 
+			OTC's Indexer component.
+			<br/>
+			<br/>
+			Here is the output of the object that was created with this OTCS command. 
+			<br/>
+			<img alt="OTCS script copy command to add key n value into maps" class="otcImage" 
+				src="./images/doc-CopyValues-map-ex.png" width="300" height="100" />
+			<br/>
+			<br/>
+			But, you will notice an issue between both the maps in the results - the values have not gone to the right place.
+			This issue is because the count of collection-type tokens in the source and target object-paths we have provided
+			do not match. But OTCS has a very easy, simple and a very unique feature called Anchors to induce a flexible 
+			behavior. We will solve it in one of the following sections.
+			<br/>
+			<br/>
+		</li>
+		<li><h4>Copying values to Enum fields:</h4>
+			Next, we will see how to set values to the enum fields.  The method <b>"valueOf(..)"</b> provided by default in 
+			Java on all enum-types is called in the generated code which expects the enum-name as a string parameter. So, 
+			the correct enum-name has to be provided to this valueOf(...) method. Here is an example code of an enum-type -  
+			<br/>
+			<pre>public enum TravelerGenderSimpleType {
+
+    MALE("Male"),
+    FEMALE("Female"),
+    OTHER("Other");
+    
+    private final String value;
+
+    TravelerGenderSimpleType(String v) {
+        value = v;
+    }
+}</pre>
+			In this example code, the enum names are "MALE", "FEMALE" and "OTHER" all of them in upper-case (not the values
+			given within parenthesis). As per this example, the value provided in the OTCS-command-block should match the 
+			name. Any value provided differently in contrast to the entire name in upper-case for this enum-type is not 
+			valid and will fail during execution even though the code generation and compilation will succeed without any 
+			issues. 
+			<br/>
+			<br/>
+			Here is the example OTCS command for populating enum fields.
+			<br/>
+			<br/>
+			<i>Test case: <b>"${OTC_HOME}/pretest/cpyvalues4"</b>.</i>
+			<br/>
+			<pre>- copy:
+    id: CP1
+    from:
+      values:
+      - MALE
+    to:
+      objectPath: travelerDetailType.gender.value</pre>
+			<br/>		
+			And below is the output in XML of the object that was created -
+			<br/>
+			<br/>
+			<img alt="OTCS script copy command to create enums" class="otcImage" 
+				src="./images/doc-CopyValues-enum-ex.png" width="250" height="100" />
+			<br/>
+			<br/>
+		</li>
+		<li><h4>Copying literals to Date fields:</h4>
+			Copying values to Date fields is very much simplified - I created another utility called date-converter to 
+			simplify this and made it available on Maven central. The next section is about this utility where the details 
+			are covered.
+			<br/>		
+			<br/>		
+			The date-type of the target leaf-token could be of any of the APIs mentioned here. 
+			<br/>		
+			<ol type="a">
+				<li>Old-school JDK date API</li>
+				<li>Java8 time API</li>
+				<li>Joda date API.</li>
+				<li>Date String</li>
+			</ol>		
+			<br/>		
+			But here in this section, we will see how to set a date-field by providing a date string. And in another section 
+			covering the 2nd variant of the copy command, we will see how to convert a date object to another. Below is an 
+			example of the OTCS fragment to create objects with date fields -
+			<br/>
+			<br/>
+			<i>Test case: <b>"${OTC_HOME}/pretest/cpyvalues5"</b>.</i>
+			<br/>
+			<pre>- copy:
+    id: CP1
+    from:
+      values:
+      - 12-Dec-05
+      - 25-02-2006
+    to:
+      objectPath: travelers.traveler[*].customObjectsMap[*,*]&lt;K&gt;.age.birthDate.value</pre>
+      
+			<br/>
+			So here the <b>"values:"</b> parameter has 2 date-strings with each of them having different date-formats.
+			<br/> 
+			<br/> 
+			Interestingly you may notice that no date-format string is specified as usually done while converting 
+			date-strings to date-types in Java. And that's because, it is taken care of by the date-converter utility.
+			<br/> 
+			<br/> 
+			And below is the output in XML of the object that was created by this OTCS-command-block.
+			<br/>
+			<br/>
+			<img alt="OTCS script copy command to create date fields" class="otcImage" 
+				src="./images/doc-CopyValues-date-ex.png" width="350" height="100" />
+		</li>
+		</ol>
+		<h4><b><u>Try it out:</u></b></h4>
+		Now lets try-out what we just learnt.
+		<br/>
+		<ol>
+			<li>First let us take a look at the OTC script file which we want to execute.</li>
+			<li>Open the file <b>"${OTC_HOME}/otc-pretest/com.athena.airlines.dto.AthenaAirlinePassenger.otcs"</b> in any 
+				text editor.</li>
+			<li>Notice the <b>"metadata:"</b> section and the <b>"otcsCommands:"</b> section.</li>
+			<li>The first two copy commands <b>"CPY1"</b> and <b>"CPY2"</b> copies values to flat-object-paths i.e. no 
+				collections in the object-path.</li>
+			<li>This 3rd command <b>"CPY3"</b> is an example of a single collection in the OTCS-object-path.</li>
+			<li>The next command <b>"CPY4"</b> is an example of 2 collections in the path.</li>
+			<li>The next set of two commands <b>"CPY5"</b> and <b>"CPY6"</b> are to create a map-entry with a key and a 
+				value.</li>
+			<li>The next command <b>"CPY7"</b> is an example to copy values into Enum fields.</li>
+			<li>And finally, <b>"CPY8"</b> is an example to copy values into date fields.</li>
+			<li>Now lets run the Junit-test class to execute the script file we just did a walk-through.</li>
+			<li>Copy this file from <b>"${OTC_HOME}/otc-pretest/"</b> to <b>"${OTC_HOME}/otc-unittest/"</b> folder.</li>
+			<li>In the <b>"org.otcframework.test.unit.OtcTest.java"</b> test-class, set the variable value for 
+				"otcsCommandType" as <b>"otcsCommandType = OTCS_COMMAND_TYPE.FROM_VALUES;"</b></li>
+			<li>Set the value of variable "pkg" to <b>"pkg = null;"</b>.</li>
+			<li>Now run the Junit test-class.</li>
+			<li>From the console logs we can see that the script is compiled and the source code is generated and compiled.
+			</li>
+			<li>The test class will do all what we already learnt earlier and print the output in XML format.</li>
+			<li>In the XML output we can see the map with 2 entries. But you will see that the values are not copied into 
+				the right location.  As already mentioned we will solve this in another section.</li>
+			<li>In the XML output, we can see the values are copied to the date fields.</li>
+			<li>In the last part of the output, we see how a Enum field is populated with the right value.</li>
+		</ol>
+		<br/>
+		<br/>
+		<br/>
+		<br/>
+	</div>
+</body>
+</html>

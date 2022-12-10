@@ -1,0 +1,335 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+	<title>Overriding The OTC Framework's default behaviors using OTC scripts</title>
+	<meta name="description" content="Overriding The OTC Framework's default behaviors using OTC scripts">
+	<meta name=”robots” content="index, follow">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta charset="UTF-8">
+
+	<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+	<meta name="Date-Revision-yyyymmdd" content="20220417">
+	<meta http-equiv="Content-Language" content="en">
+
+	<script type="text/javascript" src="/js/jquery.min.js"></script>
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
+	<script type="text/javascript" src="/js/otc-child-pages.js"></script>
+
+</head>
+
+<body class="composite">
+
+	<div class="section">
+
+		<h3>Section 9: Overrides</h3>
+		In this section, we will learn the use of the optional <b>"overrides"</b> parameter in OTCS commands.
+		<br/>
+		<br/>
+		Both the OTCS commands <b>"copy:"</b> and <b>"execute:"</b> have some default behaviors on each token in an 
+		OTCS object-path. To override some of these default behaviors, we can use the override feature of OTCS.  
+		
+		But, let me first explain what are these default behaviors - 
+		<br/>
+		<br/>
+		<ol>
+			<li><b>JavaBean spec:</b> During code generation, OTC-Compiler generates code with an expectation that the DTOs 
+				you are using in the OTCS file strictly adheres to 2 of the JavaBean specification listed below -
+				<ul>		
+					<li>The JavaBean class must have a public no-arg constructor</li>
+					<li>All JavaBean properties must have public setter and getter methods with the method-names in the 
+					camel case. </li>
+				</ul>
+				<br/>
+			</li>
+			<li><b>Concrete-types:</b> OTC-Compiler applies some concrete types by default to 4 interfaces. They 
+				are listed below -
+				<br/>
+				<img alt="OTCS Override parameter - define concrete types" class="otcImage" 
+					src="./images/doc-concrete-types.png"  width="300" height="150" />
+			</li>
+		</ol>
+		<br/>
+		<b><u>Scenarios that would require applying 'overrides:'</u></b>
+		<br/>
+		<br/>
+		<ol>
+			<li>Handling Getters / Setters violating Java Bean Spec: Sometimes, there could be situations where the DTOs are
+				violating these JavaBean specification with regard to the getters and setters. In such cases one option you 
+				have if the DTOs belong to and are used only in your project, is to refactor the code to adhere to the 
+				specification. But if they are used in multiple projects worked on by multiple teams, then you may not want 
+				to take that risk of refactoring to avoid regression issues elsewhere in multiple projects.
+			</li> 
+		    <li>Concrete types: With regard to the concrete types, there may be times where you may want to override the use
+		    	of the default concrete-types for the collections mentioned in the table above. For example, you may want to 
+		    	OTC to use an instance of java.util.LinkedList or a java.util.Stack implementation instead of the default 
+		    	java.util.ArrayList may be for a java.util.List interface.
+		    	<br/>
+		    	<br/>
+		    	There could also be times when a field in a DTO is of a specific concrete-type, but you actually prefer 
+		    	OTC-Compiler to instantiate the field with an instance of a sub-class of the field's concrete-type.
+		    </li>
+		    </li>
+		    <li>Additional processing: Another situation could be that you may want to do some additional processing on the 
+		    	data instead of just <b>'set'</b> the value or <b>'get'</b> the value. 
+		    </li>
+		</ol>
+		<br/>
+		In such situations OTCS's <b>"overrides:"</b> parameter comes to the rescue.
+		<br/>
+		<br/>
+		<h4><u>Override types:</u></h4>
+		<br/>
+		Overrides are classified into 2 types which are <b>"source:"</b> or the <b>"from:"</b> overrides and the 
+		<b>"target:"</b> or the <b>"to:"</b> overrides as shown in the below diagram -
+		<br/>
+		<br/>
+		<img alt="OTCS Override parameter - override types" class="otcImage" src="./images/doc-override-types.png" 
+			width="500" height="400" />
+		<br/>
+		<br/>
+		The supported <b>"source:"</b> overrides are <b>"getter:"</b> and <b>"getterHelper"</b> only. And an override on 
+		the target supports the same, and additionally the <b>"setter:"</b> or <b>"setterHelper:"</b> and the 
+		<b>"concreteType"</b> override. 
+		<br/>
+		<br/>
+		<ol>
+			<li><b><u>The 'getter:' property</u></b>
+				If in case the DTO you are using has a 'getter' in violation of the Java-bean spec, then you 
+				can override the 'getter' name for that token. A <b>"getter:"</b> override can be applied as shown here –
+				<br/>
+				<br/>
+				<pre>- copy:
+   id: OV01
+   from:
+     values:
+     - Adult
+     - Child
+   to:
+     objectPath: travelers.traveler[*].customObjectsMap[*,*]&lt;K&gt;.ptc.value
+     overrides:
+     - tokenPath: travelers.traveler[*].customObjectsMap[*,*]&lt;K&gt;.ptc
+       setter: setPTC
+       getter: getPTC
+   factoryClassName: OV01</pre>
+				<br/>
+				In this example, you can notice that the specified token-path is a subset of the OTCS object-path defined in 
+				the <b>"from:"</b> parameter. The token path is followed by the <b>"override:"</b> property <b>"getter:"</b>, 
+				followed by the getter-name. With this information the OTC Compiler will override the default getter method 
+				name with the specified name.
+				<br/>
+				<br/>
+				Both the source and the target objects used in the examples has a field by name <b>"ptc"</b>. Its 'getter' 
+				and 'setter' methods violates the JavaBean spec with <b>"getPTC"</b> and <b>"setPTC"</b> with all characters 
+				<b>"PTC"</b> in upper case instead of the same in camel case with only <b>"P"</b> in upper case as shown below-
+				<br/>
+				<br/>
+				<img alt="OTCS Override parameter - java spec violation" class="otcImage" 
+					src="./images/doc-getset-violation.png"  width="500" height="400" />
+				<br/>
+				<br/>
+			</li>
+
+		<ol>
+			<li><b><u>The 'setter:' property</u></b>
+				For similar reasons explained for the getter override, you can do the same for the <b>"setter"</b> too as
+				already shown in the above example.
+				<br/>
+				<br/>
+			</li>
+
+		<h4><u>Applying overrides:</u></h4>
+		Below are some points to be noted on applying overrides -
+		<br/>
+		<ol>
+			<li>It is defined for a specific OTCS token in an OTCS object-path.</li>
+			<li>The Overrides parameter should have a <b>"tokenPath:"</b> property.</li>
+			<li>A token-path is a subset of the OTCS object-path starting from the 1st token up to the token on which you
+				want to apply the override option.</li>
+			<li>An Override can have multiple <b>"tokenPath:"</b> properties.</li>
+			<li>Both <b>"getter:"</b> and <b>"getterHelper:"</b> options for the same token-path is INVALID and so it is 
+				not allowed.</li>
+			<li>Similarly, both <b>"setter:"</b> and <b>"setterHelper:"</b> options for the same token-path is INVALID 
+				and so it is not allowed. </li>
+			<li>The <b>"setterHelper:"</b> and the <b>"getterHelper:"</b> if defined, requires the <b>"helper:"</b> 
+				parameter be defined under the <b>"metadata:"</b> section with the fully qualified class-name containing the 
+				helper methods. If this is undefined, then an exception is thrown during compilation.</li>
+			<li>A token path under the <b>"from:"</b> or <b>"source:"</b> parameters can have only the <b>"getter:"</b> 
+				or <b>"getterHelper:"</b> override property.</li>
+			<li>A token path under the <b>"to:"</b> or <b>"target:"</b> parameters can have up to 3 override options – 
+				'setter' (or 'setterHelper'), a 'getter' (or 'getterHelper') and the 'concreteType'.</li>
+			<li>A 'setter' (or 'setterHelper'), a 'getter' (or 'getterHelper') if any should be on first reference of 
+				that token in the entire OTCS file. If they are not defined on first reference of the token in the OTCS 
+				file, and, if the compiler doesn't find a suitable getter or setter on the DTO on first reference to the 
+				token, the OTC-Compiler will throw an exception during compilation.</li>
+		</ol>
+		<br/>
+		<h4><u>The GetSet Helper:</u></h4>
+		A Helper class in OTCS is a class with helper methods to get a value or set a value. Please take a look at the 
+		example <b>"otcframework.test.helper.TestFactoryHelper.java"</b> class. These helpers have a difference in 
+		signature compared to the normal getter / setter.
+		<br/>
+		<br/>
+			<li><b><u>The 'getterHelper:' property</u></b>
+				<br/>
+				<br/>
+				Due to reasons explained earlier, if you choose to have a 'getterHelper', then make sure you have defined 
+				a helper class-name in the <b>"metadata:"</b> section and add a 'getterHelper' method in the helper class 
+				to fetch and return the value. You also have the choice to do any processing you may want to do if required. 
+				In this example the 'getterHelper' method is <b>"readPtc"</b> as shown below -
+				<br/>
+				<br/>
+				<pre>public static TravelerCoreType.PTC readPtc(com.kronos.airlines.dto.TravelerCoreType travelerCoreType) {
+	---- perform your actions here and return appropriate value.
+}</pre>
+				<br/>
+				When you want to tell the OTC Compiler to call this helper-class method instead of the default 'getter', 
+				you do so as shown in the below example OTCS command block -
+				<br/>
+				<pre>- copy:
+    id: OV01
+    from:
+      values:
+      - Adult
+      - Child
+    to:
+      objectPath: travelers.traveler[*].customObjectsMap[*,*]&lt;K&gt;.ptc.value
+      overrides:
+      - tokenPath: travelers.traveler[*].customObjectsMap[*,*]&lt;K&gt;.ptc
+        setter: setPTC
+        getterHelper: readPtc
+    factoryClassName: OV01</pre>
+				<br/>
+				Ensure that you have the correct signature for the 'getterHelper' - as per the above example the declaring 
+				class of the <b>"ptc"</b> field is the data-type of the map's key which is 
+				<b>"com.kronos.airlines.dto.TravelerCoreType"</b>, and the parameter of the getterHelper should be of this 
+				type. 
+			</li>
+			<br/>		
+			<br/>
+			<li><b><u>Points to note on 'getterHelper:'</u></b> 
+				<br/>		
+				<br/>		
+				While writing getterHelper methods in the Helper class, the below points should be kept in mind. Please 
+				compare what is said here with the TestFactoryHelper class for a quick understanding.
+				<ol type="a">
+					<li>A <b>"getterHelper:"</b> method should have a single method parameter of the type of the field's 
+						declaring class (parent field type) for which the <b>"getterHelper:"</b> property is configured. 
+					</li>
+					<li>A <b>"getterHelper:"</b> property is not applicable on a leaf-token of the target-object-path as it 
+						is pointless.</li>
+					<li>But, for a source-object-path, a <b>"getterHelper:"</b> property is applicable on any token.</li>
+					<li>If the token-path refers to any token other than the leaf-token in any of the object-paths, then 
+						the return-type should be the same type of the field represented by the token. </li>
+					<li>If the token-path refers to the leaf-token of the source-object-path, then the return-type should be 
+					    the field-type of the target's leaf-token because the return-value has to be set on it.</li>
+				</ol>
+			</li>
+		</ol>
+		<br/>		
+		<h5><u>The 'setter:' and 'setterHelper:' properties</u></h5>
+			<li>
+				<b><u>The 'setterHelper:' property</u></b>
+				Very similar to the getterHelper, you can do the same to the setterHelper as well. But as already explained 
+				the 'setterHelper' method will take 2 parameters in contrast to the 'getterHelper' method which takes only
+				one parameter. 
+				<br/>
+				<br/>
+				Below is an example –
+				<pre>public static void writePtc(com.athena.airlines.dto.TravelerCoreType travelerCoreType, String value) {
+      ---- process the value as appropriate and write.
+}</pre>
+				<br/>
+				Telling the OTC-Compiler to call this <b>"helper-class"</b>" method is similar to the example shown for 
+				<b>"getterHelper"</b> 
+				shown above.
+				<br/>
+				<br/>
+			</li>
+			<li>
+				<b><u>Points to note on 'setterHelper:'</u></b>
+				<br/>
+				<br/>
+				The below points should be kept in mind while coding the <b>"setterHelper"</b> method in the Helper class –
+				<ol type="a">
+					<li>The <b>"setterHelper"</b> is allowed only on token-paths of a <b>"to:"</b> or the <b>"target:"</b> 
+					parameters. It is not applicable on token-paths of a <b>"from:"</b> or <b>"source:"</b> parameters.</li>
+					<li>The return type should be void. Even if a value is returned, it is ignored.</li>
+					<li>A <b>"setterHelper"</b> in the Helper class should have two method parameters - </li>
+					<li>The first method parameter should be the field type of the declaring class of the last token in 
+					the token-path. </li>
+					<li>If the last token in the token-path is the leaf-token in the target-object-path, and if the 
+					<b>"from:"</b> parameter has the <b>"values:"</b> property defined, then the 2nd helper method parameter 
+					should be String type. But if the <b>"from:"</b> parameter has the <b>"objectPath:"</b> property then 
+					the field type should be of the leaf-token in the source-object-path.</li>
+					<li>On the other hand, if the last token in the token-path is not the leaf-token in the 
+					target-object-path, then the 2nd method parameter should be the field type of the last token in the 
+					token-path.</li>
+				</ol>
+			</li>
+		</ol>
+		<br/>
+		<h4><u>The 'concreteType:' property</u></h4>
+			The last override option is the <b>"concreteType:"</b>. When the OTCS-Compiler comes across any of the 
+			collection type interfaces as stated in the table at the beginning of this section, it defaults to specific 
+			concrete-types as already indicated. 
+			<br/>
+			<br/>
+			But if you would like to override the default concrete-type with any other concrete implementations, you 
+			may use this <b>"concreteType:"</b> property as shown below. 
+			<br/>
+		    <br/>
+			<pre>- copy:
+    id: OV05
+    from:
+      objectPath: travelers.traveler[*].recognizedTravelerMap[*,*]&lt;V&gt;.gender.value.value
+      overrides:
+      - tokenPath: travelers.traveler[*].recognizedTravelerMap[*,*]&lt;V&gt;.gender.value.value
+        getter: value
+    to:
+      objectPath: travelers.traveler[*].anonymousTravelerMap[*,*]&lt;V&gt;.gender.value
+      overrides:
+      - tokenPath: travelers.traveler[*].anonymousTravelerMap[*,*]
+        concreteType: java.util.LinkedHashMap
+    factoryClassName: OV05</pre>
+				<br/>
+				In the above example, please notice that the <b>"tokenPath:"</b> specified is up to the token representing 
+				the map and not the map-key or the map-value. We can apply this concrete-type override not only for the 
+				collection-type-tokens, but also to other token for which you want to override. The field could be an 
+				interface type or a concrete type which you want to override with an instance of its sub-class.
+			</li>
+		</ol>
+		<br/>
+		<br/>
+		<h4><u>Multiple Overrides:</u></h4>
+		<br/>
+		As an OTCS-object-path may have many tokens each representing a specific field in the object-path, these options 
+		can be provided for whichever tokens applicable. To accommodate multiple tokens, you have to define multiple 
+		token-paths. The <b>"overrides:"</b> property is an array and so can accommodate any number of override definitions. Each 
+		override should have a <b>"tokenPath:"</b> property pointing to the token on which an override has to be applied. Also, as 
+		seen in the examples, multiple override options can be applied to the same token-path.
+		<br/>
+		<br/>
+		<pre>- copy:
+    id: OV01
+    from:
+      values:
+      - Adult
+      - Child
+    to:
+      objectPath: travelers.traveler[*].customObjectsMap[*,*]&lt;K&gt;.ptc.value
+      overrides:
+      - tokenPath: travelers.traveler[*].customObjectsMap[*,*]&lt;K&gt;.ptc
+        setter: setPTC
+        getterHelper: readPtc
+      - tokenPath: travelers.traveler[*].customObjectsMap[*,*]
+        concreteType: java.util.LinkedHashMap
+    factoryClassName: OV01</pre>
+		<br/>
+		<br/>
+		<br/>
+		<br/>
+	</div>
+</body>
+</html>

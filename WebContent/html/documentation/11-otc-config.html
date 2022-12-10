@@ -1,0 +1,141 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+	<title>The OTC Framework Configurations</title>
+	<meta name="description" content="The OTC Framework Configurations">
+	<meta name=”robots” content="index, follow">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta charset="UTF-8">
+
+	<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+	<meta name="Date-Revision-yyyymmdd" content="20220417">
+	<meta http-equiv="Content-Language" content="en">
+
+	<script type="text/javascript" src="/js/jquery.min.js"></script>
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
+	<script type="text/javascript" src="/js/otc-child-pages.js"></script>
+
+</head>
+
+<body class="composite">
+	<div class="section">
+
+		<h3>Section 11: OTC Configuration</h3>
+		
+		In this section, we will look at configuring the OTC Engine.
+		<br/>
+		<br/>
+		We already got familiar with <b>"${OTC_HOME}"</b> folder in the 'Getting Started' section. 
+		But now lets look at the folder structure in detail -
+		<br/>
+		<br/>				
+		<img alt="OTC configuration - OTC_HOME folder structure" class="otcImage" src="./images/doc-otcl-home-expanded.png" 
+			width="600" height="600" />
+		<br/>
+		<br/>
+		<ol>
+			<li><b>The "config" folder:</b>
+			<br/>
+			This is the folder where the configuration files are stored. 
+				<br/>
+				<br/>
+				There are two configuration files "otc.properties" and "log.properties" which we need to be concerned about. 
+				These property files consist of the OTC engine configurations and logging configurations. 
+				<br/>
+				<br/>
+				<ul type="disc">
+					<li><u>The "otc.properties" file:</u>
+						<br/>
+						<br/>
+						The OTC configurations are kept in this file. Both the OTCS editor and the OTC Engine loads the 
+						configuration defined in this file. It has only one property which we should be concerned about and 
+						that is - 
+						<br/>
+						<br/>
+						<pre>executor.packages.filter= --enter package-names --</pre>
+						<br/>
+						Your DTO classes will belong to a package. Its members may consist of classes 
+						from other libraries and belonging to other packages. But you may want to filter 
+						classes of only some desired packages. For example, in the Editor you may want to 
+						filter only the classes of specific packages in the source-tree and the target-tree. 
+						In such a case you may set this property appropriately. For multiple packages, put 
+						them in separate lines as shown here –
+						<br/>
+						<pre>executor.packages.filter=com.athena.airlines.dto \
+            com.kronos.airlines.dto</pre>
+						<br/>
+					</li>
+					<li><u>The "log.properties" file:</u>
+						<br/>
+						The logging configurations are kept in the <b>log.properties</b> file which are used in the 
+						<b>"logback-included.xml"</b> file present in the same folder. Please take a look at these 
+						files for logging configurations. 
+					</li>
+				</ul>
+			<br/>
+			</li>
+			<li><b>The "lib" folder:</b>
+				<br/>
+				This folder is the location where the jar files containing the DTO classes are stored 
+				which are used by the OTCS editor.
+				<br/>
+				<br/>
+			</li>
+			<li><b>The "logs" folder:</b>
+				<br/>
+				This folder is the location where the the Editor and the Engine stores application logs.
+				<br/>
+				<br/>
+			</li>
+			<li><b>The "otc-pretest" folder:</b>
+				<br/>
+				This folder is used as a store for all <b>"*.otcs"</b> OTCS files meant for unit-testing. 
+				<br/>
+				<br/>
+			</li>
+			<li><b>The "otc-unittest" folder:</b>
+				<br/>
+				This folder is where the OTCS Compiler looks for the OTCS files when the "compile()" method on the compiler 
+				is invoked. When you want to test multiple OTCS files, test them one by one 
+				by copying them from the "pretest" folder to this folder.  A directory structure under this folder is 
+				translated to a package-name in the generated source code files. For example, a folder structure such as 
+				"org/otcl" as shown here will create the generated source code under the package "org.otcl". 
+				<br/>
+				<br/>
+			</li>
+			<li><b>The "otc-pretest" folder:</b>
+				<br/>
+				This folder is where the already tested OTCS files are kept. After testing the OTCS files, move them to 
+				this folder in order to avoid repeat compilations of the already tested OTCS files on every test iteration.   
+				<br/>
+				<br/>
+			</li>
+			<li><b>The "src" folder:</b>
+				<br/>
+				This folder is the location where the compiler stores the generated source code files.    
+				<br/>
+				<br/>
+			</li>
+			<li><b>The "target" folder:</b>
+				<br/>
+				This folder is the location where the compiler stores the compiled class files.   
+				<br/>
+				<br/>
+			</li>
+			<li><b>The "test-samples" folder:</b>
+				<br/>
+				This folder consist of the <b>Kronos-passenger-map.xml</b> file used to build an object of 
+				<b>KronosAirlinePassenger</b> which is used as the source object in this course.  
+				<br/>
+				<br/>
+			</li>
+		</ol>
+		<br/>
+		<br/>
+		<br/>
+		<br/>
+	</div>
+</body>
+</html>

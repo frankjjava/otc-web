@@ -1,0 +1,183 @@
+
+<!DOCTYPE html>
+
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<title>The OTC framework - the complete object to object converter</title>
+	<meta name="description" content="The OTC framework - the complete object to object converter">
+	<meta name=”robots” content="index, follow">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta charset="UTF-8">
+
+	<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+	<meta name="Date-Revision-yyyymmdd" content="20220417">
+	<meta http-equiv="Content-Language" content="en">
+
+	<script type="text/javascript" src="/js/jquery.min.js"></script>
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
+	<script type="text/javascript" src="/js/otc-child-pages.js"></script>
+
+</head>
+
+<body class="composite">
+
+	<div class="section">
+		<h3>The OTC Framework</h3>
+		<br/>
+		The OTC Framework is all about object-to-object transformations - a very productive free tool for software developers
+		released under the open-source license. 
+		<br/>
+		<br/>
+		But its not just another object mapping framework in the bloc. This one is different - its a  <b>complete solution</b> 
+		with very unique features to handle every kind of complex mappings, simple, easy to use 
+		facilitating fast-track adoption by developers and delivering best performance. You don't have to write code - no 
+		interfaces, no annotations, no writing of lengthy configurations. By the time you read through this page 
+		and a few points in a couple of sections, you will understand the uniqueness of OTC and how it stands out.
+		<br/>
+		<br/>
+		Object-to-object conversions is an activity that is common in every software project. As a developer, whether you are 
+		integrating with micro-services or B2B, or B2C, or UI application, or with a Database,
+		you may be writing the object conversion source code manually. Very few software projects have 
+		this activity automated. But even if automated, its not with a solution that is complete with one which handles every kind 
+		of complex mappings and other pros mentioned above.
+		<br/>
+		<br/>
+		Talking about complex mappings - let us quickly take a look at it from a frameworks point of view. But before that, lets 
+		understand what a developer deals with if he / she has to write code to convert one object (source) to another (target).
+		<br/>
+		<br/>
+		Here is what it is -
+		<ol>
+			<li><b>Completely different complex structures</b> of the source and target objects.</li>
+			<li><b>Collections</b> that has to be handled as you traverse through an object tree (arrays, lists, sets and 
+				dictionaries/maps with key-and-value pair entries).
+			</li>
+			<li><b>Disparate collection mappings</b> due to the disparate collection types (arrays/lists/sets vs 
+				dictionaries/maps) between the source and the target.
+			</li>
+			<li><b>Deep complex mappings:</b> The generic types in collections (including map-keys or the map-values) 
+				may be of a composite type with each one extending the tree further going deeper and thereby giving rise 
+				to complex deep object mappings.
+			</li>
+			<li><b>Permutations and combinations</b> due to the count of the collection types in the object-paths of the 
+				source and the target on which there can be no limit, in combination with <b>"Deep complex mappings"</b> 
+				mentioned above giving rise to exponential increase in permutations and combinations.
+			</li>
+		</ol>
+		<br/>
+		An object-to-object converter framework is expected handle all the above complexities. There have been several attempts 
+		over the years to automate this common activity. When we run a google-search for object-to-object converters, out of 
+		the many results, you will come across a page on 'stackoverflow' - which lists at least 20 frameworks that ranges from 
+		relevant to remotely-relevant to the problem an object-to-object converter should solve, but with many of them 
+		mentioned as dead.  This will make one wonder - "why there were so many attempts to solve the same problem ?".
+		<br/>
+		<br/>
+ 		One of the challenges in object-to-object conversion is something to do with collections. Let me elaborate - shown 
+ 		below is just a fragment in the OTC Script used to represent an object-path -
+ 		<br/>
+ 		<br/>
+ 		<pre>travelers.traveler[*].anonymousTravelerMap[*,*]&lt;V&gt;.given[*].value</pre>
+		<br/>
+		You can notice that it has 3 collections in it - 1) <b>traveler[*]</b>, 2) <b>anonymousTravelerMap[*,*]&lt;V&gt;</b> 
+		which is a dictionary (map) collection referring to the value part, and, 3) <b>given[*]</b>.
+ 		<br/>
+		<br/>
+		Points to note:-
+		<ol>
+			<li>While copying from one object to another we will always have a source and target pair.</li>
+			<li>Similar collections can occur in both the source and the target object-path pairs.</li>
+			<li>The collection-types in each of the  object-paths can be different i.e - Arrays / Lists / Dictionaries etc.</li>
+			<li>The count of collection-types in each of the  object-paths can be disparate - ie. count not matching across the 
+			source and the target object-paths.</li>
+			<li>The collection-types itself across both object-paths can also be disparate i.e - one may have a dictionary 
+			while the other may have a list / array, or, may not have a collection at all.</li>
+		</ol>
+		<br/>
+		This kind complexity in the mapping is solved by the OTC Framework. 
+		One of the unique and main highlights of this framework is a very unique feature called <b>Anchors</b> conceptualized to solve 
+		this problem. The topic <b>Performance and Features</b> explains this with an example.
+ 		<br/>
+		<br/>
+		OTC provides you a complete solution. To understand how OTC thrives, please read through the unique features in OTC 
+		under the sections <b>"OTC in 1 minute"</b> and <b>"Performance n Features"</b> which should take you only a couple 
+		of minutes.
+		<br/>
+		<br/>
+		The OTC Framework was (and is) one of my free-time passions. But before starting to build OTC, I had built 2 
+		predecessors. The first one was in 2013 but with the idea incubating since 2012. This first predecessor was built 
+		just to serve my purpose. The 2nd time was in 2016 but with a different architecture and several improvements.
+		<br/>
+		<br/>
+		However, building both predecessors took me through immense learnings due to the challenges I faced. These rich 
+		learnings were extremely valuable which has gone into the architecture, design and development of the OTC Framework 
+		which was built as a complete solution from ground-up during the pandemic lock-down between 2020-21, and was able 
+		to make it public in 2022. But once again with a complete change in the architecture - the OTC Framework in contrast to 
+		both of its predecessors is a source-code generator. 
+		<br/>
+		<br/>
+		The main drivers that kept me motivated to work steadfastly on OTC was the <b>Anchoring</b> feature to solve the 
+		collection-correlations problem and building support for disparate collection type mappings. And more so with 
+		collections containing composite generic-types making the mappings even more disparate allowing deeper-traversal 
+		into an object tree giving rise to exponential increase in the permutations and combinations of the mappings. 
+		<br/>
+		<br/>
+		So embrace OTC - its the ultimate object-mapping solution which is sure to make your object conversion activity easy. 
+		Using this Framework -
+		<br/>
+		<br/>
+		<ol>
+			<li>You don't have to spend much time but just do only a few clicks on a UI.
+				<br/>
+			</li>
+			<li>You don't have to write any lengthy configurations.
+				<br/>
+			</li>
+			<li>You don't have to code any interfaces and induce annotations. 
+				<br/>
+			</li>
+			<li>You don't have to scatter around any third party annotations all over your <b>"DTOs"</b> or 
+				<b>"Entity objects"</b> or <b>"objects to represent XML or JSON"</b> used in SOAP or REST services or the 
+				<b>"View objects"</b> or any object meant to hold data for that matter.
+				<br/>
+			</li>
+			<li>Handles all the complexities mentioned above. 
+				<br/>
+			</li>
+			<li>Gives you top-class performance. 
+				<br/>
+			</li>
+			<li>Gives you a simple, quick solution which requires just between 10 to 30 minutes from start to finish wherein 
+				you just fire up a UI, do some click-click-click and feed the output of your actions to the OTC compiler, and 
+				there you go - you have all the object-conversion source code generated in just few seconds.
+				<br/>
+			</li>
+			<li>Provides you a complete solution.
+				<br/>
+			</li>
+		</ol>
+		<br/>
+		So, whether you are integrating with microservices or a B2B, or a B2C, or a UI application, or converting 
+		entity-objects loaded from the database to / from business-domain objects, OTC is your ultimate solution.
+		<br/>
+		<br/>
+		The OTC Framework is free and is released under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache 2.0</a> 
+		open-source license.
+		<br/>
+		<br/>
+		<b><i><u>Note:</u> The various links are provided in the "Downloads, Releases..." page - </i></b>
+		<br/>
+		<br/>
+		(Request for a free demo if required).
+		<br/>
+		<br/>
+		<i><u>Trust you will have a productive time with OTC !</u></i>
+		<br/>
+		<br/>
+		<br/>
+		<br/>
+		<br/>
+	</div>
+</body>
+
+
+</html>

@@ -1,0 +1,266 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+	<title>The OTC Framework's Performance and Features</title>
+	<meta name="description" content="The OTC Framework's Performance and Features">
+	<meta name=”robots” content="index, follow">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta charset="UTF-8">
+
+	<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+	<meta name="Date-Revision-yyyymmdd" content="20220417">
+	<meta http-equiv="Content-Language" content="en">
+
+	<script type="text/javascript" src="/js/jquery.min.js"></script>
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
+	<script type="text/javascript" src="/js/otc-child-pages.js"></script>
+
+</head>
+
+<body class="composite">
+
+	<div class="section">
+		<h3>Performance</h3>
+		The OTC framework has a great performance and was tested on a laptop with Java 8, 8GB RAM, 4 cores CPU running at 
+		2.4GHz. The performance was compared with Mapstruct, a know framework among the many existing object-mapping frameworks 
+		in Java. The test consisted of copying just one single String field from a source object to a target object. It was an
+		apples-to-apples comparison with the exact same operation executed across both the frameworks.
+		<br/>
+		<br/>
+		The performance comparison test was done using <b>Java Microbenchmark Harness (JMH)</b> for throughput. And presented 
+		below is a graphical representation of the results. 
+		<br/>
+		<br/>
+		<img alt="OTC performance vs mapstruct performance" src="./images/performance.png"  width="750" height="450">
+		<br/>
+		<br/>
+		It shows various parameters but I would like to draw your focus on the max throughput. The Mapstruct framework 
+		gave a performance of around 0.9+ million OPS. But whereas <b>OTC’s executor is more than eleven times 
+		faster</b> giving a performance of 10.1+ million OPS. 
+		<br/>
+		<br/>
+		The JMH test classes used for both the tests are available as part of the download.
+		<br/>
+		<br/>
+		<h3>Unique Features</h3>
+		The  OTC framework also stands out in its features and performance and so thrives in making the life of a developer 
+		easy when it comes to object transformations.
+		<br/>
+		<br/>
+		<b>Before touching upon the unique features, let us agree upon some basic terms for some common ground -</b>
+		<br/>
+		<br/>
+		<ul>
+			<li>
+				<b>Source and Target objects:</b> As the objective is to convert one object to another, we have a source 
+				object and a target object to deal with. 
+				<br/>
+				<br/>
+			</li>
+			<li><b>Object-paths:</b> Each of these objects are like tree structures which can have any depth. The values are 
+				set on leaf nodes. So we have a source-object-path and a target-object-path.
+				<br/>
+				<br/>
+			</li>
+			<li>
+				<b>Notations:</b> 
+				<br/>
+				<ol>
+					<li><b>Dot notation:</b> We will connect all the field-names in the object-path by a dot.</li>
+					<li><b>Array/List notation:</b> These object paths can have collections (arrays, lists, dictionaries). 
+						So we will represent an array or a List with the <b>"[*]"</b> notation.
+					</li>
+					<li><b>Dictionary (Map) notation:</b> We will represent a dictionary type collection with a 
+						<b>"[*,*]"</b> notation.
+					</li>
+					<li><b>Key notation:</b> A dictionary has a key-value pair. So we will represent the map-key with a
+						<b>"[*,*]&lt;k&gt;"</b> notation.
+					</li>
+					<li><b>Value notation:</b> And we will represent the map-value with a <b>"[*,*]&lt;V&gt;"</b> 
+						notation.
+					</li>
+				</ol>
+			</li>
+		</ul>
+		<br/>
+		Here is an example -
+		<pre>travelers.traveler[*].anonymousTravelerMap[*,*]&lt;V&gt;.given[*].value</pre>
+		<br/>
+		What we just saw is an example of an OTCS (Object Tree Conversion Script) object-path. If you have worked with 
+		Spring's SpEL or OGNL, then this should look familiar to you. But OTC-Scripts as a whole (not just the object-path)
+		is more elaborate and has a different purpose and is central to the OTC Framework.
+		<br/>
+		<br/>
+		In the example we notice that the depth of the object-path is 6 levels. The first field-name <b>"travelers"</b> is 
+		the child of a parent object which is the root object (not shown here). So from the root to the leaf-node 
+		<b>"value"</b> field, we have 6 levels. However there is no limit on the depth of the object-path that can be 
+		represented.
+		<br/>
+		<br/>
+		With this understanding, now let me introduce you to the unique features -
+		<br/>
+		<br/>
+		<ol>
+<!-- 		
+			<li><b>"Deep-object-paths":</b>
+				The OTC framework puts no limit to the depth of the object-path. The OTC framework can handle object-paths 
+				of any depth.				
+				<br/>
+				<br/>
+			</li>
+ -->			
+			<li><b>Complex Deep-object-paths with collections:</b>
+				An object-path can have collections (arrays, lists, dictionaries which has key-and-value entries - aka. maps)
+				The generic types in collections (including the map-keys or the map-values) may be of a composite type with 
+				each one extending the tree further down going deeper and thereby giving rise to complex deep object paths.
+				OTC handles all of them with ease.
+				<br/>
+				<br/>
+			</li>
+			<li><b>Mappings of disparate collection-types:</b>
+				Both the object paths can have mixes and matches of disparate collection types. These mixes and matches in 
+				each object-path can also be disparate across both the source and target object-paths. In simple words, 
+				in OTC there are no restrictions to restrict same collection-types on both the source and target 
+				object-paths. Say for example, if the source-object-path has a dictionary, there is no restriction that the 
+				target-object-path as well should have a corresponding dictionary. Nor is there any restriction restricting 
+				the number of collections to be equal across both the object-paths. Also, one may have a collection type while 
+				the other may not have any collection-type at all for that matter. In such scenarios OTC applies some defaults. 
+				<br/>
+				<br/>
+			</li>
+			<li><b>Permutations and Combinations:</b>
+				Take a moment to consider the number of permutations and combinations of the source and target object-paths 
+				that can arise. Deeper the object paths, more exponential are the mappings. The mixes and matches mentioned 
+				above in Deep-object-paths can result in very high number of permutations and combinations. 
+				<br/>
+				<br/>
+			</li>
+			<li><b>Collection correlations:</b>
+				When both the source and the target object-paths have collections, and, if the target has a count more than
+				the collection-count than the source, the first collection in the source has to correlate with one of the 
+				multiple collections in the target. OTC applies a default correlation in such scenarios.
+				<br/>
+				<br/>
+			</li>
+			<li><b>Anchoring:</b>
+				This is one of the main unique highlights of the OTC framework. What if the default correlation explained 
+				above is not applicable in your situation ? 
+				<br/>
+				Not to worry - OTC has a very unique feature called Anchoring. It allows you to override the default 
+				correlation by just placing an Anchor character at the appropriate collection. Examples on Anchoring is 
+				given under the below sub-title ("Examples on Anchoring") to give more clarity.
+				<br/>
+				<br/>
+			</li>
+			<li><b>Performance:</b>
+				As already seen above, OTC delivers unmatched performance. 
+				<br/>
+				<br/>
+			</li>
+			<li><b>No Annotations / Interfaces:</b>
+				There is no need to create interfaces or induce any annotations. 
+				<br/>
+				<br/>
+			</li>
+			<li><b>Fully automated:</b>
+				There is no need to write lengthy configurations or code anything manually. 
+			</li>
+		</ol>
+		<br/>
+		<h4><u>Examples on Anchoring</u></h4>
+		<br/>
+		<i><b><u>Note:</u></b> XML was chosen in the below outputs for representation purposes only. But OTC works on any 
+			object meant to hold data which could be <b>"DTOs"</b> or <b>"Entity objects"</b> or <b>"JAXB objects"</b> 
+			to generate/consume XML or <b>"JSON objects"</b> to generate/consume JSON used in SOAP or REST services or the 
+			<b>"View objects" to integrate with the UI, etc.</b></i>
+		<br/>
+		<br/>
+		Consider this object path -
+		<pre>dataLists.passengerList.passenger[*].identityDocuments[*].givenName[*]</pre>
+		<br/>
+		This object-path has 3 collections - <b>'passenger[*]'</b>, <b>'identityDocuments[*]'</b> and <b>'givenName[*]'</b>. 
+		Lets say, the framework creates an object as represented by the below output in its default behavior -
+		<br/>
+		<br/>
+		<ol>
+			<li><b>This below output has a </b>
+				<br/>
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- single passenger in the <b>'Passenger'</b> collection and 
+				<br/>
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- a single identityDocument in the <b>'IdentityDocument'</b> collection 
+				<br/>
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- but with multiple name in the <b>'GivenName'</b> collection.
+				<br/>
+				<br/>
+				<pre><i>&lt;DataLists&gt;
+    &lt;PassengerList&gt;
+        &lt;Passenger&gt;
+            &lt;IdentityDocument&gt;
+                &lt;GivenName&gt;Rajesh&lt;/GivenName&gt;
+                &lt;GivenName&gt;Prem&lt;/GivenName&gt;
+                &lt;GivenName&gt;Franklin&lt;/GivenName&gt;
+                &lt;GivenName&gt;Thandav&lt;/GivenName&gt;
+            &lt;/IdentityDocument&gt;
+        &lt;/Passenger&gt;
+    &lt;/PassengerList&gt;
+&lt;/DataLists&gt;</i></pre>
+				<br/>
+			</li>
+			<li><b>But lets ask ourselves - will this be the case always ? </b>
+				<br/>
+				<br/>
+				No. You might want to create an object with the values accommodated in a different way structurally by 
+				stretching the <b>'IdentityDocument'</b> and contracting the <b>'GivenName'</b> as shown below -
+				<br/>
+				<br/>
+				<pre><i>&lt;DataLists&gt;
+    &lt;PassengerList&gt;
+        &lt;Passenger&gt;
+            &lt;IdentityDocument&gt;
+                &lt;GivenName&gt;Rajesh&lt;/GivenName&gt;
+                &lt;GivenName&gt;Prem&lt;/GivenName&gt;
+            &lt;/IdentityDocument&gt;
+            &lt;IdentityDocument&gt;
+                &lt;GivenName&gt;Franklin&lt;/GivenName&gt;
+                &lt;GivenName&gt;Thandav&lt;/GivenName&gt;
+            &lt;/IdentityDocument&gt;
+        &lt;/Passenger&gt;
+    &lt;/PassengerList&gt;
+&lt;/DataLists&gt;</i></pre>
+				<br/>
+			</li>
+			<li>Or, as in this one with multiple <b>'Passenger'</b> and each one with its own <b>'IdentityDocument'</b> :
+				<br/>
+				<br/>
+				<pre><i>&lt;DataLists&gt;
+    &lt;PassengerList&gt;
+        &lt;Passenger&gt;
+            &lt;IdentityDocument&gt;
+                &lt;GivenName&gt;Rajesh&lt;/GivenName&gt;
+                &lt;GivenName&gt;Prem&lt;/GivenName&gt;
+            &lt;/IdentityDocument&gt;
+        &lt;/Passenger&gt;
+        &lt;Passenger&gt;
+            &lt;IdentityDocument&gt;
+                &lt;GivenName&gt;Franklin&lt;/GivenName&gt;
+                &lt;GivenName&gt;Thandav&lt;/GivenName&gt;
+            &lt;/IdentityDocument&gt;
+        &lt;/Passenger&gt;
+    &lt;/PassengerList&gt;
+&lt;/DataLists&gt; </i></pre>
+			</li>
+		</ol>
+		<br/>
+		all you need to do is use OTC's Anchoring feature by placing the Anchor character appropriately on the object 
+		path to switch between any of the stretching-contracting shown above in just few seconds.
+		<br/>
+		<br/>
+		<br/>
+		<br/>	
+		<br/>
+		<br/>	
+	</div>
+</body>
+</html>

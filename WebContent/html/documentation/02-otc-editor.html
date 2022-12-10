@@ -1,0 +1,320 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+	<title>The OTC Framework's OTC Script Editor for object transformations</title>
+	<meta name="description" content="The OTC Framework's OTC Script Editor for object transformations">
+	<meta name=”robots” content="index, follow">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta charset="UTF-8">
+
+	<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+	<meta name="Date-Revision-yyyymmdd" content="20220417">
+	<meta http-equiv="Content-Language" content="en">
+
+	<script type="text/javascript" src="/js/jquery.min.js"></script>
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
+	<script type="text/javascript" src="/js/otc-child-pages.js"></script>
+
+</head>
+
+<body class="composite">
+
+	<div class="section">
+		<h3>Section 2: OTC Script Editor</h3>
+			In the previous section on "Getting Started" we went through the process of downloading and starting the 
+			OTC-Editor web application to help in creating the OTC script files. In this section, we will learn how to use 
+			the editor and create those files. The OTC-editor is a tool for use by software developers who wants to generate 
+			the OTC script files without having to manually type them out. All the developer has to do is just 
+			click-click-click - its that easy.
+			<br/>
+			<br/>
+			The UI has 2 vertical sections – one for the
+			"source" object on the left also called as the "from" and the other for the "target" object on the right 
+			also called as the "to". In each section, the developer has to make a few selections and add the entire OTCS 
+			command block on a single click.
+			<br/>
+			<br/>
+			Below is a screen-shot of the editor:
+			<br/>
+			<br/>
+			<img alt="OTC script editor" src="./images/doc-otc-editor.png" width="900" height="600" />
+			<br/>
+			<br/>
+			Now lets go through each of the components on this editor screen.
+			<br/>
+			<br/>
+			<ol>
+				<li><b>Pkg/NS:</b> On the top in both sections are text boxes labeled <b>"Pkg/NS"</b> which denotes 
+					<b>"Package / Namespace name"</b>. Enter the package names of your root classes on both sides for which 
+					you want to create the OTCS command blocks. 
+					<br/>
+					<br/>
+					<i><b><u>Note:</u></b> If the OTCS file which you are going to create will not contain <b>"objectPath:"</b> 
+					property in the <b>"from:"</b> parameter in the entire OTCS file but only <b>"values:"</b> property, 
+					then there is no need to enter the source package name and select a source-type. (see the OTC script 
+					example given below)</i>
+					<br/>
+					<br/>
+				</li>
+				
+				<li><b>Fetch Types:</b> When you click on the <b>"Fetch-types"</b> button, the application will retrieve all 
+					the class names in that specified package and will populate the <b>"Types"</b> drop-down.
+					<br/>
+					<br/>
+				</li>
+					
+				<li><b>Types:</b> Select the root class from the <b>"Types"</b> drop down for both the "from" and the 
+					<b>"to"</b>.
+					<br/>
+					<br/>
+				</li>
+								
+				<li><b>OTC script area:</b> Just below the user-input elements what we have is the <b>"OTC-script-area"</b>
+					which is where the OTCS-command-blocks are added. The next section provides details of the OTCS blocks. 
+					<br/>
+					<br/>
+					<b>Pop-up Menu:</b> Right-clicking on this area will display a pop-up menu with the command options 
+					<b>"copy"</b> and <b>"execute"</b>" to choose from.
+					<br/>
+					<br/>
+				</li>
+				
+				<li><b>Actions panel:</b> Just below this is the horizontally laid-out <b>"Actions panel"</b> with a few 
+					buttons to perform various operations.
+					<br/>
+					<br/>
+				</li>
+				
+				<li><b>"Show Tree" button:</b> This button when clicked will display the tree structure of both the source 
+					and the target classes in the bottom <b>"Tree-area"</b> section.
+					<br/>
+					<br/>
+				</li>
+				
+				<li><b>"Add OTCS Command" button:</b> The <b>"Add OTCS Command"</b> button when clicked after selecting the 
+					appropriate fields in the tree-structures will generate the OTCS-command-block in the <b>"OTCS-area"</b>.
+					<br/>
+					<br/>
+					The generated OTCS contents will contain some place-holders for specific parameters expected to be 
+					filled in by the developer. The place-holders are the text enclosed within "&lt;&lt;" and "&gt;&gt;" 
+					angular brackets. If they are not applicable then such parameter's entire lines has to be removed. The 
+					place-holders are - <b>&lt;&lt;helperClassName&gt;&gt;</b>, <b>&lt;&lt;namespace&gt;&gt;</b> 
+					<b>&lt;&lt;converter&gt;&gt;</b> and <b>&lt;&lt;module&gt;&gt;</b>
+					<br/>
+					<br/>
+				</li>
+				
+				<li><b>"Create file" button:</b> Clicking on the <b>"Create file"</b> button will present you a download 
+					dialog box to save it as a <b>".otcs"</b> file. The location you should select for saving the file 
+					should be the <b>"${OTC_HOME}/otc-pretest"</b> folder. While running the OTCS compiler, in order to have 
+					the generated code placed under a package (namespace) hierarchy, create a folder structure to represent 
+					the package hierarchy. And when you want to unit-test the OTCS file, copy the file / folder containing 
+					the file which you want to unit-test to the <b>"${OTC_HOME}/otc-unittest"</b> folder.			
+				<br/>
+				<br/>
+				<i><u><b>Note:</b></u></i> DO NOT change the name of the file if you are prompted to select a location to 
+				save the file or after downloading. It is important to keep the name determined by OTCS editor intact for the 
+				OTCS's compiler to identify the types.
+				<br/>
+				<br/>
+				Below is an example of an OTCS script contents -
+				<pre>metadata:
+  objectTypes:
+    source: com.kronos.airlines.dto.KronosAirlinePassenger
+    target: com.athena.airlines.dto.AthenaAirlinePassenger
+  entryClassName: KronosToAthena
+commands:
+- copy:
+    id: CV01
+    from:
+      values:
+      - Elon Musk
+    to:
+      objectPath: mainPassengerName
+#    disable: true
+- copy:
+    id: MP11
+    from:
+      objectPath: travelerDetailType.name.surname.value
+    to:
+      objectPath: dataLists.passengerList.passenger[*].identityDocuments[*].visa.visaType
+    factoryClassName: MP11
+#    disable: true
+- copy:
+    id: OV05
+    from:
+      objectPath: travelers.traveler[*].recognizedTravelerMap[*,*]&lt;V&gt;.gender.value.value
+      overrides:
+      - tokenPath: travelers.traveler[*].recognizedTravelerMap[*,*]&lt;V&gt;.gender.value.value
+        getter: value
+    to:
+      objectPath: travelers.traveler[*].anonymousTravelerMap[*,*]&lt;V&gt;.gender.value
+      overrides:
+      - tokenPath: travelers.traveler[*].anonymousTravelerMap[*,*]
+        concreteType: java.util.LinkedHashMap
+    factoryClassName: OV05
+#    disable: true
+- execute:
+    id: XE12
+    module:
+      namespace: org.otc
+    source:
+      objectPath: travelerDetailType.name.surname
+    target:
+      objectPath: dataLists.passengerList.passenger[*].identityDocuments[*].visa
+    factoryClassName: XE12
+#    disable: true</pre>
+					<br/>
+				</li>
+				<li><b>"Flip OTCS" button:</b> This button flips the parameters of the <b>"from:"</b> and the <b>"to:"</b> 
+					in each of the OTCS command blocks. Most often there will be a need to create a reverse-mapping of the
+					OTCS contents you already created. Clicking this button will do that job. However, one point to note is, 
+					in some scenarios due to the kind of properties supported within the parameters of the <b>"from:"</b> 
+					and the <b>"to:"</b>, there may be some minor information that will be lost in certain scenarios in 
+					specific OTCS-command-blocks, which has to be fixed manually.
+					<br/>
+					<br/>
+				</li>
+				<li><b>"Clear" button:</b> This button deletes all the contents in the OTCS-area and resets the ID 
+					generation internally.
+					<br/>
+					<br/>
+				</li>
+				<li><b>Tree-area:</b> This section at the bottom of the page has a <b>"source-tree"</b> and a 
+					<b>"target-tree"</b> panels on either side where the tree-structures of both the source and target 
+					classes are displayed. Expand both of them as appropriate to navigate to the required fields on both 
+					sides and select them and then click on <b>"Add OTCS command"</b> to create the OTCS command block.
+					<br/>
+					<br/>
+				</li>
+				<li><b>Pop-up Context-menus:</b> There are a couple of context-menus that will pop up when certain nodes on 
+					the tree are right-clicked -
+					<br/>
+					<br/>
+					Right-clicking on the root-node of either tree pops-up a menu with some override-options as shown. 
+					<br/>
+					<br/>
+					When any collection type node on the target tree such as an array or a list or a set or a dictionary is 
+					right clicked, an option to set or unset an <b>Anchor</b> is shown. The "Anchoring" feature is discussed 
+					in detail in section on <b>"Anchors"</b>.
+					<br/>
+					<br/>
+				</li>
+			</ol>
+
+			<h4>Structure of OTCS.</h4>
+			The OTC script which you see above are created in the YAML format which looks similar to JSON. A basic 
+			knowledge of working with YAML is recommended to work with OTCS. There are several tutorial websites as 
+			well as YouTube videos on YAML which can help you familiarize yourself in approximately 10 minutes.
+			<br />
+			<br />
+			A OTCS file has 2 main sections called the <b>"metadata:"</b> and <b>"commands:"</b>.
+			<br />
+			<br />
+			<ol>
+				<li><b>The "metadata:" section:</b>
+					This section contains the mandatory parameters such as the object-types and the entry-class name, 
+					and an optional parameter called the helper.
+					<ol type="a">
+						<li>The <b>"source:"</b> and <b>"target:"</b> types in the <b>"metadata:"</b> section are auto 
+							populated by the tool with the selections done on the <b>"Types"</b> drop-downs on the UI while 
+							creating the first OTCS block.
+						</li>
+						<li>The <b>"entryClassName:"</b> parameter is the class-name for which the value is auto populated 
+							which the developer may change if required. When the compiler generates code, it creates an 
+							entry-class with this name.</li>
+						<li>The optional <b>"helper:"</b> parameter is used to specify the helper-class. The details on this 
+							helper is covered on a section titled <b>"Overrides"</b>.</li>
+					</ol>
+					<br/>
+				</li>
+				<li><b>The "commands:" section:</b>
+					This is the section which has all the OTCS command-blocks.
+					<ol type="a">
+						<li>A OTCS-command-block consists of either the <b>"copy:"</b> or the <b>"execute:"</b> command 
+							with all its relevant parameters. These commands are covered in detail in other sections as we 
+							progress.
+						</li>
+						<li>Each command has an ID parameter which is a unique ID assigned to each OTCS block. This ID is 
+							auto-generated, but you can change it if you like ensuring it is unique.
+						</li>
+						<li>The <b>"copy"</b> command has a <b>"from:"</b> parameter which has either a <b>"values:"</b> 
+							property with values defined to populate the created object fields or the <b>"objectPath:"</b> 
+							property to create an object by reading values from a source object. The next section covers 
+							this aspect in more detail.
+						</li>
+						<li>It also has a <b>"to:"</b> parameter which has a reference to the objectPath in the target 
+							object.
+						</li>
+						<li>Each block has a mandatory <b>"factoryClassName:"</b> parameter which is auto-populated with the 
+							same value as the auto-generated ID value. The developer may choose to change it if required with 
+							a unique class-name for the source code file that will be generated for that block. The compiler 
+							generates factory-classes one for each OTCS-command-block. The main entry-class calls each of 
+							these generated factory-classes in the same order as the defined order of the OTCS blocks.
+						</li>
+						<li>Each block may also have an optional <b>"overrides:"</b> parameter. This parameter is covered in 
+							detail on a later section titled <b>"Overrides"</b>.
+						</li>
+						<li>The <b>"execute:"</b> command has a different set of parameters and is covered in detail in a 
+							separate section.</li>
+					</ol>
+				</li>
+			</ol>
+			<br />
+			<h4><u>Try it out:</u></h4>
+			<ol>
+				<li>Start the editor UI as indicated in the previous section's "Try it out:" heading.</li>
+				<li>Enter the package name of the root source object as <b>"com.kronos.airlines.dto"</b> in the text box 
+					labeled <b>"Pkg/NS"</b> on the "From / Source" section (left side)</li>
+				<li>Enter the package name of the root target object as <b>"com.athena.airlines.dto"</b> in the text box 
+					labeled <b>"Pkg/NS"</b> of the "To / Target" section (right side)</li>
+				<li>And then click on the <b>"Fetch types"</b> button. You will notice the <b>"Types"</b> drop-down is 
+					populated with all the types in the <b>"com.kronos.airlines.dto"</b> package.
+				</li>
+				<li>Select the root source type from the drop-down dialog box.</li>
+				<li>Repeat the same actions for the target-type on the right panel.</li>
+				<li>If you want to create OTCS commands by only providing values without using a source object, 
+					then there is no need to select a source-type and only the target-type details will suffice.</li>
+				<li>After entering the required details click on the <b>"Show Tree"</b> button.</li>
+				<li>The tree structure of the selected classes will be displayed in the below tree-area.</li>
+				<li>Next expand the trees on both sides and select the required fields.</li>
+				<li>Then click on the <b>"Add OTCS Command"</b> button.</li>
+				<li>You will notice the script begins with the <b>"metadata:"</b> section in the <b>"OTCS-script-area"</b> 
+					followed by the copy OTCS command block.
+				</li>
+				<li>Repeat this step until all the required OTCS command blocks are added.</li>
+				<li>You can right-click on the root node to display the context menu with few <b>"Overrides"</b> options.</li>
+				<li>Overrides can be flagged only at the root level on the tree which gets applied to the whole tree.</li>
+				<li>You may select or de-select the options under <b>"Overrides"</b> based on need.</li>
+				<li>You can use the handler on the right bottom of the "script-area" to resize the view as needed.</li>
+				<li>Select an Override option and then add a OTCS command-block. You will notice the "Overrides" parameters 
+					are added in the newly added script-block.
+				</li>
+				<li>Now turn off the Override and try adding another OTCS command to see the difference.</li>
+				<li>Another context-menu is the <b>"Anchoring"</b> menu. You can apply the anchor flag on any 
+					collection-type such as the array, a list, a set or a dictionary type. 
+				</li>
+				<li>Right-click on one of the collection-type fields and enable the Anchor. Now add a command-block. 
+					You will see the Anchor applied on a collection type token in the newly created command-block.</li>
+				<li>Continue playing around with different permutations and combinations until you become comfortable.</li>
+				<li>Click on <b>"Create file"</b> button. You will get a message drawing your attention that some 
+					place-holders in some sections are not updated.</li>
+				<li>Remove the <b>"helper:"</b> parameter under the <b>"metadata:"</b> section for now.
+				</li>
+				<li>You will notice that the "IDs are auto-generated and are in unique-sequence. The <b>"id:"</b> is a 
+					mandatory parameter.
+				</li>
+				<li>Make sure the script does not contain any placeholder.</li>
+				<li>And then click on the <b>"Create File"</b> button.</li>
+				<li>The <b>".otcs"</b> file will be downloaded.</li>
+				<li>Go to your downloads folder and copy the OTCS file to the <b>"${OTC_HOME}/otc-pretest"</b> folder.</li>
+			</ol>
+			<br/>
+			<br/>
+			<br/>
+			<br/>
+		</div>
+</body>
+</html>

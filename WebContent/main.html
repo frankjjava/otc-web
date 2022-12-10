@@ -1,0 +1,198 @@
+
+<html>
+<head>
+	<title>The OTC Framework - object to object converter</title>
+	<meta name="description" content="Object to object transformation framework for software developers">
+	<meta name=”robots” content="index, follow">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta charset="UTF-8">
+
+	<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+	<meta name="Date-Revision-yyyymmdd" content="20220724">
+	<meta http-equiv="Content-Language" content="en">
+
+	<!-- Global site tag (gtag.js) - Google Analytics -->
+ 	
+	<script async src="https://www.googletagmanager.com/gtag/js?id=G-6X11ZSK31W"></script>
+
+	<script>
+	  window.dataLayer = window.dataLayer || [];
+	  function gtag(){dataLayer.push(arguments);}
+	  gtag('js', new Date());
+	  gtag('set', 'page_path', '/main.html');
+	  gtag('event', 'page_view');
+	  gtag('config', 'G-6X11ZSK31W');
+	</script>	
+
+	<link rel="icon" href="/images/otc-logo-01.png">
+	
+	<link rel="stylesheet" href="/css/bootstrap.css">
+	<link rel="stylesheet" href="/css/site.css" type="text/css">
+	<link rel="stylesheet" href="/css/print.css" media="print">
+	<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.0/themes/smoothness/jquery-ui.css">
+
+	<script type="text/javascript" src="/js/jquery.min.js"></script>
+	<script type="text/javascript" src="/js/bootstrap.js"></script>
+	<script type="text/javascript" src="/js/prettify.min.js"></script>
+	<script type="text/javascript" src="/js/site.js"></script>
+	<script type="text/javascript" src="/js/otc.js"></script>
+	<script type="text/javascript" src="https://code.jquery.com/ui/1.12.0/jquery-ui.min.js"></script>
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
+	
+</head>
+
+<body class="composite">
+
+	<div class="navbar">
+		<div class="navbar-inner">
+			<div class="container-fluid">
+				<div>
+					<img alt="OTC logo, OTCS logo" class="logo-left" src="./images/otc-logo-01.png">
+				</div>
+
+				<label class="otcBrand"><b>&copy; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;OTC - <i>Object Tree Converter</i></b></label>
+
+			</div>
+		</div>
+	</div>
+
+	<div class="container-fluid">
+		<table>
+			<tbody>
+				<tr>
+					<td class="sidebar">
+						<table class="layout-table">
+							<tbody>
+								<tr>
+									<td>
+										<div class="well sidebar-nav">
+											<ul class="nav nav-list">
+												<!-- <li class="nav-header">Contents</li> -->
+												<li><a id="preface" href="#" 
+													data-href="./html/01-preface.html"
+													title="Preface">Preface</a></li>
+
+												<li><a id="otcin1min" href="#" 
+													data-href="./html/02-OTC-in-1-min.html"
+													title="OTC in 1 Minute">OTC in 1 Minute</a></li>
+
+												<li><a id="performanceFeatures" href="#" 
+													data-href="./html/03-performance-features.html"
+													title="Performance n Features">Performance n Features</a></li>
+
+												<li><a id="documentation" href="#" 
+													data-href="./html/04-documentation.html"
+													title="Documentation">Documentation</a>
+													
+													<ul class="nav nav-list">
+														<li><a id="gettingstarted" href="#" 
+															data-href="./html/documentation/01-getting-started.html"
+															title="Getting Started">Getting Started</a>
+														</li>
+														<li><a id="otceditor" href="#" 
+															data-href="./html/documentation/02-otc-editor.html"
+															title="OTC Editor">OTCS Editor</a>
+														</li>
+														<li><a id="testproject" href="#" 
+															data-href="./html/documentation/03-test-project.html"
+															title="Test Project">Test Project</a>
+														</li>
+														<li><a id="copyingliterals" href="#" 
+															data-href="./html/documentation/04-copying-literals.html"
+															title="Copying Literals">Copy command - Literals</a>
+														</li>
+														<li><a id="dateconverter" href="#" 
+															data-href="./html/documentation/05-date-converter.html"
+															title="Date Converter">Date Converter utility</a>
+														</li>
+														<li><a id="copyingsource" href="#" 
+															data-href="./html/documentation/06-copying-source.html"
+															title="Copying Source">Copy command - Source</a>
+														</li>
+														<li><a id="anchors" href="#" 
+															data-href="./html/documentation/07-anchors.html"
+															title="Anchors">Anchors</a>
+														</li>
+														<li><a id="execute" href="#" 
+															data-href="./html/documentation/08-execute.html"
+															title="Execute">Execute Command</a>
+														</li>
+														<li><a id="overrides" href="#" 
+															data-href="./html/documentation/09-overrides.html"
+															title="Overrides">Overrides</a>
+														</li>
+														<li><a id="otcengine" href="#" 
+															data-href="./html/documentation/10-otc-engine.html"
+															title="OTC Engine">OTC Engine</a>
+														</li>
+														<li><a id="otcConfig" href="#" 
+															data-href="./html/documentation/11-otc-config.html"
+															title="OTC Configuration">OTC Configuration</a>
+														</li>
+													</ul>
+												</li>
+<!-- 
+												<li><a id="trainingSupport" href="#" 
+													data-href="./html/05-training-support.html" 
+													title="Training">Training</a></li>
+ -->
+												<li><a id="downloadsReleases" href="#" 
+													data-href="./html/06-downloads-releases.html" 
+													title="Sourcecode, Downloads">Sourcecode, Downloads......</a></li>
+																									
+												<li><a id="contributeCode" href="#" 
+													data-href="./html/07-contribute-code.html" 
+													title="Contribute code">Contribute code</a></li>
+													
+												<li><a id="faq" href="#" 
+													data-href="./html/08-faq.html" 
+													title="FAQ">FAQ</a></li>
+													
+												<li><a id="feedback" href="#" 
+													data-href="./html/09-feedback-author-contact.html"
+													title="Feedback">Feedback & Contact</a></li>
+
+											</ul>
+										</div>
+									</td>
+								</tr>
+<!-- 								
+								<tr>
+									<td class="sidebar">
+										<div class="well otcFooter">
+											<b>Copyright © 2021 OTC Framework. All Rights Reserved.
+											<p></p>
+											OTC, OTCS, OTC Engine, OTC Editor, the OTC Logo, are trademarks of 'OTC Framework'. 
+											<p></p>
+											All other trademarks are the property of their respective owners.</b>
+										</div>
+									</td>
+								</tr>
+ -->
+							</tbody>
+						</table>
+					</td>				
+					<td class="content" id="content">
+						<!-- Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements. See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version
+    2.0 (the "License"); you may not use this file except in compliance
+    with the License. You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0 Unless required by
+    applicable law or agreed to in writing, software distributed under
+    the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES
+    OR CONDITIONS OF ANY KIND, either express or implied. See the
+    License for the specific language governing permissions and
+    limitations under the License. -->
+
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+
+</body>
+
+</html>

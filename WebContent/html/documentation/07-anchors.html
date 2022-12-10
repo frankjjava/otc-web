@@ -1,0 +1,607 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+	<title>OTCS Anchors - setting correlations in collection types</title>
+	<meta name="description" content="OTCS Anchors - setting correlations in collection types">
+	<meta name=”robots” content="index, follow">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta charset="UTF-8">
+
+	<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+	<meta name="Date-Revision-yyyymmdd" content="20220417">
+	<meta http-equiv="Content-Language" content="en">
+
+	<script type="text/javascript" src="/js/jquery.min.js"></script>
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
+	<script type="text/javascript" src="/js/otc-child-pages.js"></script>
+
+</head>
+
+<body class="composite">
+
+	<div class="section">
+
+		<h3>Section 7: OTCS Anchors</h3>
+		<p>
+		This one is a good one and you are sure to enjoy it. This is very unique and also a very important topic.
+		<br/>
+		<br/>
+		OTCS Anchors is a very unique and a productive feature conceptualized and built only in OTCS making the lives 
+		of developers very easy.
+		<br/>
+		<br/>
+		Using OTCS Anchors, flexibility can be induced in an object tree containing multiple collections in an object-path.
+		It gives the ability to stretch any particular collection while contracting others in a given object-path to 
+		accommodate the values in different ways - (you may want to call it "Elastic-Trees" if thats appropriate). This 
+		flexibility is induced by using the OTCS's Anchor character which is a <b>"^"</b> (caret) symbol on the 
+		appropriate target-collection-token. 
+		<br/>
+		<br/>
+		But first let me highlight the problem we want to solve by looking into some problem scenarios.
+		<br/>
+		<br/>
+		<h4><u>Scenario 1:</u> Ideal Scenario</h4>
+		<i>Test case: <b>"${OTC_HOME}/pretest/et1_values"</b>.</i>
+		<br/>
+		<br/>
+		Here is an ideal scenario. The <b>"values:"</b> property as shown here is an array and hence a collection having 
+		2 members. The target <b>"objectPath:"</b> property has one collection-token by name <b>"cabinType[*]"</b>. 
+		<br/>
+		<br/>
+		<pre>- copy:
+    id: CP1
+    from:
+      values:
+      - Economy
+      - Business
+    to:
+      objectPath: preference.cabinPreferences.cabinType[*].name
+    factoryClassName: CP1</pre>
+		<br/>
+		So, there is one collection in the source and one collection-token in the target as depicted in the below diagram -
+		<br/>
+		<br/>
+		<img alt="OTCS Anchors with one-to-one correlation" 
+			class="otcImage" src="./images/doc-Anchors-ideal-diag.png" width="500" height="300" />
+		<br/>
+		<br/>
+		Since there is a one-to-one correlation it fits perfectly well producing an object as shown here -
+		<br/>
+		<br/>
+		<img alt="OTCS Anchors example with one-to-one correlation" class="otcImage" src="./images/doc-Anchors-1-ex.png" 
+			width="250" height="100" />
+		<br/>
+		<br/>
+		So there is no problem in this.
+		<br/>
+		<br/>
+		
+		<h4><u>Scenario 2:</u> One-to-many</h4>
+		<i>Test case: <b>"${OTC_HOME}/pretest/et2_values"</b>.</i>
+		<br/>
+		<br/>
+		Given here is a one-to-many scenario. Consider this fragment to copy the provided values to the target.
+		<br/>
+		<br/>
+		<pre>- copy:
+    id: CP2
+    from: 
+      values:
+      - Work Visa
+      - Visit Visa
+    to:
+      objectPath: dataLists.passengerList.passenger[*].identityDocuments[*].visas[*].visaType
+    factoryClassName: CP2</pre>
+		<br/>
+		In this example, the <b>"values:"</b> collection is having 2 members. The <b>"to:"</b> object-path has 3 
+		collection-tokens which are <b>"passenger[*]"</b>, <b>identityDocuments[*]"</b> and <b>"visas[*]"</b>. 
+		<br/>
+		<br/>
+		So, to which one of the collection-tokens in the <b>"to:"</b> object-path should the <b>"values:"</b> property 
+		be correlated ? 
+		<br/>
+		<br/>
+		In other words, should the <b>"passenger[*]"</b> collection have 2 entries, or is it the 
+		<b>"identityDocuments[*]"</b> collection, or is it the <b>"visas[*]"</b> collection ?
+		<br/>
+		<br/>
+		<i><u><b>Note:</b></u> we are considering the source-collection correlation as one single collection to a 
+		collection-token in the target, and so please do not confuse that to the actual members getting copied to the field 
+		represented by that token. In this example the values will always be copied to the leaf-token <b>"visaType"</b> only 
+		- if that is not clear the outputs given below should clarify the same.</i>
+		<br/>
+		<br/>
+		Well, the default behavior of OTC in this scenario is a <b>"proportional-right-alignment"</b> correlation <i>
+		(explained under <b>"Correlations and Stacking:"</b> header below)</i> wherein, the source collection is 
+		correlated to the <b>"visas[*]"</b> collection-token. As a result the <b>"visas[*]"</b> collection will have 
+		two members to accommodate the values in <b>"visaType"</b> field with only one member each in the 
+		<b>"passenger[*]"</b> and the <b>"identityDocuments[*]"</b> collections as shown in this XML output -
+		<br/>		 
+		<br/>
+		<img alt="OTCS Anchors correlation example for default alignment" class="otcImage" 
+			src="./images/doc-Anchors-2-ex.png" width="370" height="175" />
+		<br/>
+		<br/>
+		Below is the diagram representing the <a>default alignment</a> that was applied - 
+		<br/>
+		<br/>
+		<img alt="OTCS Anchors with default alignment correlation" class="otcImage" 
+			src="./images/doc-Anchors-2-diag.png" width="750" height="500" />
+		<br/>
+		<br/>
+		However this may not be what is desired always. In certain scenarios you may want a <b>left-aligned</b> correlation to 
+		<b>"passenger[*]"</b> collection-token creating an object as shown in this below XML output wherein the  
+		<b>"passenger[*]"</b> collection is stretched to have 2 entries with each of them having a single member in the
+		<b>"visas[*]"</b> collection, -
+		<br/>
+		<br/>
+		<img alt="OTCS Anchors example for left aligned correlation" class="otcImage" src="./images/doc-Anchors-3-ex.png" 
+			width="370" height="175" />
+		<br/>
+		<br/>
+		OR, a correlation aligned to the <b>"identityDocuments[*]"</b> target-collection-token creating an object as 
+		shown in this below XML output where the <b>"identityDocuments[*]"</b> collection is stretched to have 2 entries 
+		with only one passenger,
+		<br/>
+		<br/>
+		<img alt="OTCS Anchors example for custom aligned correlation" class="otcImage" src="./images/doc-Anchors-4-ex.png" 
+			width="370" height="175" />
+		<br/>
+		<br/>
+		You can create these variations by overriding the default correlation using Anchors.
+		<br/>
+		<br/>
+		<h5><u>Points on Anchors:</u></h5>
+		<ol>
+			<li>To override and change the default correlation of right-alignment, we should induce an elastic behavior 
+				using the anchoring feature.</li>
+			<li>Anchoring is done by placing the OTCS's anchor character which is a <b>"^"</b> symbol immediately after 
+				the open bracket of a collection-token as in <b>"[^*]"</b> or <b>"[^*,*]"</b>.</li>
+			<li>Anchors are used on the target-collection-tokens only. It is NOT done on the source in version 2.x -
+				but its a feature planned in version 3.0 to support multiple anchors</li>
+			<li>If the source-collection-token count is greater than 1, it is always the first source-collection-token  
+				which is anchored to the one marked on the target-collection token.</li>
+		</ol>
+		<h5><u>Correlations and Stacking:</u> (the defaults)</h5>
+		<ol>
+			<li><b>"Proportional-correlation":</b> if you are copying from a source object wherein the count of
+				source-collection-tokens in the source-object-path is <b>"equal"</b> to the target-collection-tokens in 
+				the target-object-path, then it will result in a straight-forward one-to-one corresponding correlation.</li>
+			<li><b>"Right-Alignment-Proportional-correlation":</b> if the source-collection-tokens is greater than 1, and, 
+				the target-collection-tokens is <b>"greater"</b> than source-collection-tokens, then, the 
+				source-collection-tokens are right-aligned proportionally to the target-collection-tokens. For example, if 
+				source-collection-tokens is 2 and the target-collection-tokens is 4, the 1st source-collection-token will 
+				be correlated to the 3rd target-collection-token and the 2nd source-collection-token will be correlated to 
+				the 4th target-collection-token.</li>
+			<li><b>"Stacking":</b> if the source-collection-tokens is greater than 1, and, the target-collection-tokens 
+				is <b>lesser</b> than the source-collection-tokens, then the source-collection-tokens which do not have 
+				a corresponding target-collection-token, will be stacked on the last target-collection-token on the 
+				target.</li>
+		</ol>
+		<br/>
+		Below are the examples of OTCS command fragments with the use of Anchors that produced objects as shown in 
+		the XML outputs that follows - 
+		<br/>
+		<br/>
+		<pre>from: 
+  values:
+  - Work Visa
+  - Visit Visa
+  to:
+    objectPath: dataLists.passengerList.passenger<b>[^*]</b>.identityDocuments[*].visas[*].visaType</pre>
+		<br/>
+		In this example the <b>"passenger[*]"</b> collection token is anchored causing the compiler to correlate the  
+		<b>"values:"</b> property in the source to the <b>"passenger"</b> collection in the target represented pictorially 
+		as shown below - 
+		<br/>
+		<br/>
+		<img alt="OTCS Anchors left aligned correlation" class="otcImage" src="./images/doc-Anchors-3-diag.png" width="750" 
+			height="500" />
+		<br/>
+		This creates an object as shown in this below XML output -
+		<br/>
+		<br/>
+		<img alt="OTCS Anchors example for left aligned correlation" class="otcImage" src="./images/doc-Anchors-3-ex.png" 
+			width="370" height="175" />
+		<br/>
+		<br/>
+		In this next example OTCS fragment below, the <b>"identityDocuments[*]"</b> collection token is anchored 
+		causing the compiler to correlate the <b>"values:"</b> property to the <b>"identityDocuments"</b> collection -
+		<br/>
+		<pre>from: 
+  values:
+  - Work Visa
+  - Visit Visa
+  to:
+    objectPath: dataLists.passengerList.passenger[*].identityDocuments<strong>[^*]</strong>.visas[*].visaType</pre>
+		<br/>
+		Which can be represented as - 
+		<br/>
+		<br/>
+		<img alt="OTCS Anchors custom aligned correlation" class="otcImage" src="./images/doc-Anchors-4-diag.png" width="750" 
+			height="500" />
+		<br/>
+		<br/>
+		that will create an object as shown in this below XML output -
+		<br/>
+		<br/>
+		<img alt="OTCS Anchors example for custom aligned correlation" class="otcImage" src="./images/doc-Anchors-4-ex.png" 
+			width="370" height="175" />
+		<br/>
+		<br/>
+		
+		<h4><u>Scenario 3:</u> (Larger target-collection-tokens): y > (x > 1)</h4>
+		<i>Test case: <b>"${OTC_HOME}/pretest/et3"</b>.</i>
+		<br/>
+		<br/>
+		The scenarios which we already considered thus far, did not involve a source object. But the remaining examples 
+		involves a source object as well. 
+		<br/>
+		<br/>
+		<i><u>Note:</u> Please refer to the <b>"${OTC_HOME}/test-samples/Kronos-passenger-map.xml"</b> file from which 
+		the source object is built to compare and analyze with the output of the target object generated in the examples.</i>
+		<br/>
+		<br/>
+		This 3rd scenario is a <b>"Large-target"</b> scenario where, the target-collection-tokens count (y), is greater 
+		than the source-collection-tokens count (x) which is > 1. 
+		<br/>
+		<br/>
+		Below is an example of the OTCS fragment -
+		<br/>
+		<br/>
+		<pre>from:
+  objectPath: dataLists.passengerList.passenger[*].givenName[*]
+to:
+  objectPath: travelers.traveler[*].anonymousTraveler[*].name.given[*].value</pre>
+		<br/>
+		In the above fragment -
+		<ul>
+			<li>Source-collection-tokens count is 2, </li>
+			<li>Target-collection-tokens count is 3 which is larger than the source-collection-tokens count. </li>
+		</ul>
+		<img alt="OTCS Anchors - larger target-collection-tokens" class="otcImage" 
+			src="./images/doc-Anchors-largetarget-diag.png" width="600" height="250" />
+		<br/>
+		<br/>
+		This above example OTCS command fragment will create an object as per the XML output shown below. 
+		<br/>
+		<br/>
+		<img alt="OTCS Anchors - example of default alignment in larger target-collection-tokens" class="otcImage" 
+			src="./images/doc-Anchors-5-ex.png" width="325" height="150" />
+		<br/>
+		<br/>
+		Here too, it will trigger the default <b>"Proportional-right-alignment"</b> mode which we saw earlier wherein it will
+		correlate -
+		<ul>
+			<li>the <b>"passenger[*]"</b> collection-token in the source to the <b>"anonymousTraveler[*]"</b> 
+			collection-token in the target.</li>
+			<li>and the <b>"givenName[*]"</b> collection-token in the source to the <b>"given[*]"</b> collection-token in 
+			the target.</li>
+		</ul>
+		which is represented by the below diagram -
+		<br/>
+		<br/>
+		<img alt="OTCS Anchors - default alignment in larger target-collection-tokens" class="otcImage" 
+			src="./images/doc-Anchors-5-diag.png" width="325" height="150" />
+		<br/>
+		<br/>
+		The <b>"${OTC_HOME}/test-samples/Kronos-passenger-map.xml"</b> file from which the source object was built has - 
+		<ul>
+			<li>2 members in <b>"passenger[*]"</b> collection with </li>
+			<li>each one having 2 entries for <b>"givenName[*]"</b> collection.</li>
+		</ul>
+		(please take a look at the XML file now).
+		<br/>
+		<br/>
+		But what if we need a different alignment of the correlations ?
+		<br/>
+		<br/>
+		Three different correlation alignments are possible to meet your various needs wherein, the <b>"passenger[*]"</b> 
+		collection-token in the source can be aligned to any of the below collection-tokens in the target as depicted in the  
+		below diagram -
+		<ul>
+			<li><b>"travelers[*]"</b> target-collection-token or</li>
+			<li><b>(default correlation) "anonymousTraveler[*]"</b> target-collection-token as shown in the above example 
+				fragment or</li>
+			<li><b>"given[*]"</b> target-collection-token</li>
+		</ul>
+		<br/>
+		<img alt="OTCS Anchor sliding in larger target-collection-tokens" class="otcImage" 
+			src="./images/doc-Anchors-sliding-diag.png" width="370" height="175" />
+		<br/>
+		<br/>
+		<h5><u>Anchor sliding:</u></h5> You can have the desired correlation by sliding the anchor to any collection 
+		token in the OTC-object-path of the target from the extreme left collection token to the extreme right collection 
+		token to induce elasticity as desired.
+		<br/>
+		<br/>
+		In fact, what we did in <b>"Scenario 2"</b> was anchor-sliding to achieve the desired result. 
+		<br/>
+		<br/>
+		<i><u>Note:</u> Anchoring is not required for default correlation alignments.</i>
+		<br/>
+		<br/>
+		Anchoring the <b>"traveler[^*]"</b> target-collection-token as indicated by the arrows in the below diagram, will 
+		align <b>"passenger[*]"</b> collection-token in the source to <b>"traveler[*]"</b> collection-token in the target
+		instead of <b>"anonymousTraveler[*]"</b>
+		<br/>
+		<br/>
+		<img alt="OTCS Anchors - left alignment in larger target-collection-tokens" class="otcImage" 
+			src="./images/doc-Anchors-et3-align-left-diag.png" width="370" height="175" />
+		<br/>
+		<br/>
+		This will produce an object as shown in this below XML output where the <b>"traveler[*]"</b> collection is 
+		stretched. 
+		<br/>
+		<br/>
+		<img alt="OTCS Anchors - example of left alignment in larger target-collection-tokens" class="otcImage" 
+			src="./images/doc-Anchors-et3-align-left-ex.png" width="370" height="175" />
+		<br/>
+		<br/>		
+		A different requirement you may have would be to correlate the first source-collection-token 
+		<b>"passenger[*]"</b> to the <b>"given[*]"</b> target-collection-token as depicted below - 
+		<br/>
+		<br/>
+		<img alt="OTCS Anchors - right alignment with stacking in larger target-collection-tokens" class="otcImage" 
+			src="./images/doc-Anchors-et3-align-right-diag.png" width="370" height="175" />
+		<br/>
+		<br/>
+		In this below example the <b>"given[*]"</b> collection is stretched - in this case <b>"Stacking"</b> mode which
+		was explained earlier gets triggered. To induce this kind of elasticity, anchor the <b>"given[^*]"</b> 
+		collection as showin above.
+		<br/>
+		<br/>
+		This will produce an object as shown here in this below XML output -
+		<br/>
+		<br/>
+		<img alt="OTCS Anchors - eample of right alignment with stacking in larger target-collection-tokens" class="otcImage" 
+			src="./images/doc-Anchors-et3-align-right-ex.png" width="370" height="175" />
+		<br/>
+		<br/>
+		
+		<h4><u>Scenario 4:</u>  Equal source and target collection-tokens :  y = (x > 1) </h4>
+		<i>Test case: <b>"${OTC_HOME}/pretest/et4"</b>.</i>
+		<br/>
+		<br/>
+		The next scenario is where both the target-collection-tokens (y) and source-collection-tokens (x) are equal and 
+		are greater than 1 giving a one-to-one correlation by default - <b>"Proportional-correlation"</b> explained earlier. 
+		<br/>
+		<br/>
+		<pre>from:
+  objectPath: dataLists.passengerList.passenger[*].identityDocuments[*].middleName[*]
+to:
+  objectPath: travelers.traveler[*].anonymousTraveler[*].name.given[*].value</pre>
+		<br/>
+		In this OTCS command fragment, the collection-tokens are equal in both - it is three each.  
+		<br/>
+		<br/>
+		<img alt="OTCS Anchors - alignment in equal number of source and target collection tokens" class="otcImage"
+			src="./images/doc-Anchors-et4-default-diag.png" width="450" height="250" />
+		<br/>
+		<br/>
+		As per the default-behavior, 
+		<ul>
+			<li>The <b>"passenger[*]"</b> collection-token in the source correlates to <b>"traveler[*]"</b> collection in 
+				the target.</li>
+			<li><b>"identityDocuments[*]"</b> collection-token gets correlated to <b>"anonymousTraveler[*]"</b> 
+				collection-token</li>
+			<li><b>"middleName[*]"</b> collection-token gets correlated to <b>"given[*]"</b> collection</li>
+		</ul>
+		This will produce an object as shown in this below XML output -
+		<br/>
+		<br/>
+		<img alt="OTCS Anchors - example of default alignment in equal number of source and target collection tokens"
+			class="otcImage" src="./images/doc-Anchors-et4-default-ex.png" width="250" height="125" />
+		<br/>
+		<br/>
+		But now supposing if our need is to correlate <b>"passenger[*]"</b> source-collection-token to 
+		<b>"anonymousTraveler[*]"</b> target-collection-token resulting in multiple <b>"anonymousTraveler[*]"</b> in 
+		a single <b>"traveler[*]"</b> in the target, this can be achieved by anchoring <b>"anonymousTraveler[^*]"</b> 
+		target-collection-token as shown below -
+		<br/>
+		<br/>
+		<img alt="OTCS Anchors - custom alignment with stacking in equal number of source and target collection tokens" 
+			class="otcImage" src="./images/doc-Anchors-et4-anchor-1-diag.png" width="370" height="175" />
+		<br/>
+		<br/>
+		which will produce an object as shown in the below XML output -
+		<br/>
+		<br/>
+		<img alt="OTCS Anchors - example of custom alignment with stacking in equal number of source and target collection 
+			tokens" class="otcImage" src="./images/doc-Anchors-et4-anchor-1-ex.png" width="250" height="125" />
+		<br/>
+		<br/>
+		<i><u><b>Note:</b></u> The <b>"${OTC_HOME}/test-samples/Kronos-passenger-map.xml"</b> file from which the source 
+		object was built has only one member in the <b>"identityDocuments[*]"</b> collection in each of the 
+		<b>"passenger[*]"</b> collection, due to which you don't notice the effect of stacking in the above example.</i>
+		<br/>
+		<br/>
+		But again another requirement may be to correlate <b>"passenger[*]"</b> source-collection-token to <b>"given[*]"</b> 
+		target-collection-token resulting in stacked values on the <b>"given[*]"</b> collection as represented in the below
+		diagram, this can be achieved by anchoring the <b>"given[^*]"</b> collection type token as indicated below -
+		<br/>
+		<br/>
+		<img alt="OTCS Anchors - right alignment with stacking in equal number of source and target collection tokens" 
+			class="otcImage" src="./images/doc-Anchors-et4-anchor-2-diag.png" width="450" height="200" />
+		<br/>
+		<br/>
+		creating an object as shown in this below XML output -
+		<br/>
+		<br/>
+		<img alt="OTCS Anchors - example of right alignment with stacking in equal number of source and target collection 
+			tokens" class="otcImage" src="./images/doc-Anchors-et4-anchor-2-ex.png" width="250" height="125" />
+		<br/>
+		<br/>
+
+		<h4><u>Scenario 5:</u> (Larger source-collection-tokens): (y > 1) < x</h4>
+		<i>Test case: <b>"${OTC_HOME}/pretest/et5"</b>.</i>
+		<br/>
+		<br/>
+		Next is a Large-source scenario where the target-collection-tokens (y) while > 1, is less than the 
+		source-collection-token (x). Here is an example OTCS fragment -
+		<br/>
+		<pre>from:
+  objectPath: dataLists.passengerList.passenger[*].identityDocuments[*].middleName[*]
+to:
+  objectPath: travelers.traveler[*].anonymousTraveler[*].name.surname.value</pre>
+		<br/>
+		<br/>
+		<img alt="OTCS Anchors - larger source-collection-tokens" 
+			class="otcImage" src="./images/doc-Anchors-et5-diag.png" width="500" height="350" />
+		<br/>
+		<br/>
+  		You can notice that -
+		<ul>
+			<li>Source-collection-tokens is = 3, </li>
+			<li>Target-collection-tokens is = 2. </li>
+		</ul>
+		In this OTCS fragment given above, the default-behavior will be -
+		<br/>
+		<br/>
+		<img alt="OTCS Anchors - default behavior in larger source-collection-tokens" class="otcImage" 
+			src="./images/doc-Anchors-et5-default-diag.png" width="500" height="350" />
+		<br/>
+		<br/>
+		As per the default correlations -
+		<ol>
+			<li>The <b>"passenger[*]"</b> source-collection-token correlates to <b>"traveler[*]"</b> 
+			target-collection-token.</li>
+			<li><b>"identityDocuments[*]"</b> source-collection-token correlates to <b>"anonymousTraveler[*]"</b></li>
+			<li><b>"middleName[*]"</b> source-collection-token also correlates to <b>"anonymousTraveler[*]"</b> resulting 
+			in stacked values.</li>
+		</ol>
+		This will produce an object as shown in this below XML output - 
+		<br/>
+		<br/>
+		<img alt="OTCS Anchors - example of default behavior in larger source-collection-tokens" class="otcImage" 
+			src="./images/doc-Anchors-et5-ex.png" width="250" height="125" />
+		<br/>
+		<br/>
+		But again, what if you need an object with all the three collections in the source correlated to 
+		<b>"anonymousTraveler[*]"</b> collection in the target ? 
+		<br/>
+		<br/>
+		This can be done by anchoring the <b>"anonymousTraveler[^*]"</b> target-collection-token as shown below – 
+		<br/>
+		<br/>
+		<img alt="OTCS Anchors - custom correlation in larger source-collection-tokens" class="otcImage" 
+			src="./images/doc-Anchors-et5-anchor-diag.png" width="500" height="350" />
+		<br/>
+		<br/>
+		This will create an object as shown in the below XML output - 
+		<br/>
+		<br/>
+		<img alt="OTCS Anchors - example of custom correlation in larger source-collection-tokens" class="otcImage" 
+			src="./images/doc-Anchors-et5-anchor-ex.png" width="250" height="125" />
+		<br/>
+		<br/>
+		<h4><u>Anchoring maps:</u></h4>
+		<i>Test case: <b>"${OTC_HOME}/pretest/et6"</b>.</i>
+		<br/>
+		<br/>
+		Anchoring maps is same as what we already learnt. But since the OTCS command blocks are distinct for the map-key 
+		and map-value, you should pay close attention on the collection-token counts within each of the copy-blocks to 
+		see if it matches across both the copy command blocks. If not, you have to manage the anchors appropriately.
+		<br/>
+		<br/>
+		The target object-path in both cases will be the same. But the source object-path can be <b>"assorted"</b> as in 
+		the below given example OTCS-command fragments for the map-key and the map-value. 
+		<br/>
+		<br/>
+		<b><u>Step 1: Copy block for the Map-key:</u></b>
+		<br/>
+		<br/>
+		Here is an example OTCS fragment for the map-key –
+		<br/>
+		<pre>from:
+  objectPath: dataLists.passengerList.passenger[*].identityDocuments[*].identityDocumentNumber
+to:
+  objectPath: travelers.traveler[*].anonymousTravelerMap[*,*]&lt;K&gt;</pre>
+		<br/>
+		The collection-token counts in both are equal and below is the default alignment - 
+		<br/>
+		<br/>
+		<img alt="OTCS Anchors - default behavior in collection tokens with map-keys" class="otcImage" 
+			src="./images/doc-Anchors-map-key-align-default.png" width="450" height="225" />
+		<br/>
+		<br/>
+		<b><u>Step 2: Copy block for the Map-value:</u></b>
+		<br/>
+		<br/>
+		And here is an example OTCS fragment for the map-value –
+		<br/>
+		<pre>from:
+  objectPath: dataLists.passengerList.passenger[*].identityDocuments[*].middleName
+to:
+  objectPath: travelers.traveler[*].anonymousTravelerMap[*,*]&lt;V&gt;.given[*].value</pre>
+		<br/>
+		The target-collection-token count is greater than the source-collection-token count.
+		<br/>
+		<br/>
+		Since by now you are familiar with the correlation alignments, please make note of the default alignments as 
+		indicated by the arrows -
+		<br/>
+		<br/>
+		<img alt="OTCS Anchors - default behavior in larger source-collection-tokens with map-values" class="otcImage" 
+			src="./images/doc-Anchors-map-value-align-default.png" width="450" height="225" />
+		<br/>
+		<br/>
+		These OTCS-command fragments will produce an object as shown in this XML output – 
+		<br/>
+		<br/>
+		<img alt="OTCS Anchors - default behavior in collection-tokens with map-values" class="otcImage" 
+			src="./images/doc-Anchors-map-default-ex.png" width="250" height="125" />
+		<br/>
+		<br/><b>Ooooppsss !! </b>
+		<img src="./images/oops.png" width="35" height="35" />
+		The values in the map is not what we desired when we look up the source 
+		<b>"${OTC_HOME}/test-samples/Kronos-passenger-map.xml"</b>
+		<br/>
+		<br/>
+		Infact, even the second name picked up is also not the correct one when we cross check with the source.
+		<br/>
+		<br/>
+		Well, if the source object-paths were not <b>"assorted"</b> for the map-key and the map-value, then it would have 
+		worked perfectly well. But since that is not the case, it is a correlation issue in the OTCS-command block of the 
+		map-value. 
+		<br/>
+		<br/>
+		We solve this by just anchoring the <b>"traveler[*]"</b> in the target-collection-token -
+		<br/>
+		<br/>
+		<img alt="OTCS Anchors - correcting the correlations in collection-tokens with map keys and map-values" class="otcImage" 
+			src="./images/doc-Anchors-map-value-anchor.png" width="450" height="225" />
+		<br/>
+		<br/>
+		With the problem solved, the object created will be similar to the one shown here in this XML output – 
+		<br/>
+		<br/>
+		<img alt="OTCS Anchors - example of correcting the correlations in collection-tokens with map keys and map-values" 
+			class="otcImage" src="./images/doc-Anchors-map-anchor-ex.png" width="250" height="125" />
+		<br/>
+		<br/>
+		<h4>Quiz:</h4>
+		Since this is the last example in this section, I would like you to do a small exercise by analyzing the source 
+		XML file and compare it with both the outputs shown with and without anchoring and try to answer the below 
+		questions – you will enjoy answering.
+		<br/>
+		<br/>
+		<ol>
+			<li>In the first output, why the map-value in the 2nd Traveler's, AnonymousTravelerMap is empty?</li>
+			<li>In the first output, why the <b>"given[*]"</b> collection in the object-path under the 1st Traveler is having 
+			2 entries? </li>
+			<li>In the second output, why the count of entries in the <b>"given[*]"</b> collection in the object-path under 
+			the 1st Traveler is different from that of the first output?</li>
+			<li>In the second output, did you expect the entry "Kanikaraj" in "given[*]" collection instead of "Gopi" under  
+			the 2nd Traveler? </li>
+			<li>And if yes, why is it not so?</li>
+		</ol>
+		<br/>
+		<br/>
+		<br/>
+		<br/>
+	</div>
+</body>
+</html>

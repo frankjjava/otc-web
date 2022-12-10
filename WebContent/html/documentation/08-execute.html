@@ -1,0 +1,210 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+	<title>OTCS Execute command - invoke other mappings and custom converters</title>
+	<meta name="description" content="OTCS Execute command - invoke other mappings and custom converters">
+	<meta name=”robots” content="index, follow">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta charset="UTF-8">
+
+	<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+	<meta name="Date-Revision-yyyymmdd" content="20220417">
+	<meta http-equiv="Content-Language" content="en">
+
+	<script type="text/javascript" src="/js/jquery.min.js"></script>
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
+	<script type="text/javascript" src="/js/otc-child-pages.js"></script>
+
+</head>
+
+<body class="composite">
+
+	<div class="section">
+
+	<h3>Section 8: The Execute command</h3>
+	<p>
+		In this section, we will learn OTCS's Execute command.
+		<br/>
+		<br/>
+		You will come across situations where instead of a copying values to the target, you may want to execute – 
+		<ol>
+			<li>An already existing OTCS file as a sub-module,</li>
+			<li>Or a custom-converter. </li>
+		</ol>
+		You can do so using the OTCS's <b>"execute:"</b> command. 
+		<br/>
+		<br/>
+		<h4>Execute module:</h4>
+		Let's assume that you already have a OTCS file for a given source and target types. Now, while working on a new OTCS 
+		file, lets say the types of one of the child tokens somewhere in both the source and the target object-paths are the 
+		same as the ones for which you already have the OTCS file. In such situations creating the same OTCS-commands all 
+		over again is an unnecessary repetitive task. But thankfully there is no need to do so. Instead you can invoke those 
+		same set of OTCS commands in the other file as a sub-module in the new OTCS file which you are creating. You can do 
+		that  with the OTCS <b>"execute:"</b> command along with its <b>"module:"</b> parameter.  
+		<br/>
+		<br/>
+		Here is an example –
+		<br/>
+		<br/>
+		<i>Test case: ID XE15 in <b>"${OTC_HOME}/pretest/execute"</b>.</i>
+		<br/>
+		<pre>- execute:
+    id: XE15
+    module:
+      namespace: com.example
+    source:
+      objectPath: dataLists.passengerList.passenger[*].identityDocuments[*].visa
+    target:
+      objectPath: $
+    factoryClassName: XE15</pre>
+		<br/>
+		<i><u><b>Note:</b></u></i>
+		<ol>
+			<li><i>The execute command has the <b>"source:"</b> and the <b>"target:"</b> parameters in contrast to the 
+				<b>"from:"</b> and the <b>"to:"</b> parameters of the copy command.</i>
+			</li>
+			<li><i>In the <b>"objectPath:"</b> parameter, we are referring to the root object, by using a <b>"$"</b> symbol. 
+				The type of the root object is determined by the type mentioned under the <b>"metadata:"</b> section.</i>
+			</li>
+			<li><i><b>"namespace:"</b> is a mandatory property. If the OTCS file does not belong to any package, then 
+				you should leave the value for the property blank. If this property is missing the compilation will fail.</i>
+			</li>
+			<li>Since you are invoking another module, the types you select in the object-path should be of composite types 
+				for which you have already created the OTCS file. It should not be for scalar types.
+			</li>
+		</ol>
+		<br/>
+		This command will execute the OTCS file created with the types of the leaf-token <b>"visa"</b> as source and the 
+		target's root object type. In the above example the type of the token <b>"visa"</b> is 
+		<b>"com.kronos.airlines.dto.VisaType"</b>, (look it up in the <b>"otc-test-schema"</b> project). And the target 
+		root object is of the type <b>"com.athena.airlines.dto.AthenaAirlinePassenger"</b>. So the above command will 
+		execute the OTCS file created for these source and target type combination. 
+		<br/>
+		<br/>
+		Since the <b>"namespace:"</b> parameter in this example is specified with a package name as <b>"com.example"</b>, 
+		the compiler will look for the OTCS file under that package. 
+		<br/>
+		<br/>
+		If an object-path has collection-tokens, the external OTCS file will be executed iteratively for each member in the 
+		collection, and in this example, each time passing a different <b>"visa"</b> instance. Since, the source object-path 
+		has two collection-tokens, this will be a nested iteration with the outer loop iterating over the members of the 
+		<b>"passenger[*]"</b> collection and the inner loop iterating over the members of the <b>"identityDocuments[*]"</b>
+		collection. Only one of the OTCS object-paths can have collection-tokens. If both object-paths have 
+		collection-tokens the compiler will reject such a command-block and the compilation will fail.
+		<br/>
+		<br/>
+				
+		<h4>Execute OTCS converter:</h4>
+		Sometimes there will be situations when you may want to perform some processing with any of the child objects 
+		present anywhere in both the source and the target object-paths. In such scenarios, use this <b>"converter:"</b> 
+		parameter. 
+		<br/>
+		<br/>
+		<b>"org.otcframework.common.converter.OtcsConverter"</b> is a functional interface that is provided. You have to 
+		write your own implementation of this interface.
+		<br/>
+		<br/>
+		<i>Test case: ID XE1 in <b>"${OTC_HOME}/pretest/execute"</b>.</i>
+		<br/>
+		<pre>- execute:
+    id: XE1
+    converter: otcframework.test.converter.TestConverter
+    source:
+      objectPath: travelerDetailType.name.surname
+    target:
+      objectPath: dataLists.passengerList.passenger[*].identityDocuments[*].visa
+    factoryClassName: XE1</pre>
+		<br/>
+		<br/>
+		<i><u><b>Note:</b></u> The <b>"TestConverter"</b> class specified in the above example can be found in the 
+			<b>"otc-test-schema"</b> project.</i>
+		<br/>
+		<br/>
+		But, first you can ask yourself whether what you intend to do is a simple processing and whether you really need 
+		a custom converter, or whether you can manage with the helper-class explained in the next section on <b>Overrides</b>
+		<br/>
+		<br/>
+		In this above OTCS command, the <b>"convert(...)"</b> method of the <b>"TestConverter"</b> will be called. The 
+		source <b>"surname"</b> and the target <b>"visa"</b> will be passed to the TestConverter as parameters. This will be 
+		done iteratively because, the target OTCS-object-path contains collections. 
+		<br/>
+		<br/>
+		The below diagram explains this - 
+		<br/>
+		<br/>
+		<img alt="OTCS Execute command - custom converter - TestConverter" 
+			class="otcImage" src="./images/doc-otc-converter.png"  width="500" height="400" />
+		<br/>
+		<br/>
+		The last parameter in the custom converter's method is the map which was already explained in the section on the 
+		<b>"Test Project"</b>. As already explained, while invoking the Executor's execute method, if you pass a map with 
+		values as the last parameter, the same is available in the converter's method which you are implementing from which 
+		you may retrieve the values and do whatever processing you want to do. 
+		<br/>
+		<br/>
+		<img alt="OTCS Execute command - custom converters - app-data parameter" class="otcImage" 
+			src="./images/doc-otc-last-parameter.png"  width="500" height="400" />
+		<br/>
+		<br/>
+		<h5>Execute both combined:</h5>
+		<br/>
+		Here is an example of an OTCS fragment with both the options. 
+		<br/>
+		<br/>
+		<i>Test case: ID XE17 in <b>"${OTC_HOME}/pretest/execute"</b>.</i>
+		<br/>
+		<pre>- execute:
+    id: XE17
+    converter: otcframework.test.converter.TestConverter
+    module:
+      namespace: com.example
+    source:
+      objectPath: travelerDetailType.name
+    target:
+      objectPath: dataLists.passengerList.passenger[*].identityDocuments[*].visa
+    factoryClassName: XE17</pre>
+		<br/>
+		For situations where both the options have to be executed for a given source and target OTCS object-path pair, 
+		both the options can be specified in a single command instead of having the <b>"execute:"</b> OTCS command block 
+		defined twice. In such cases, the <b>"default execution order"</b> would be, the execution of <b>"converter:"</b> 
+		first, followed by <b>"module:"</b> irrespective of the order of placement of the 2 parameters. 
+		<br/>
+		<br/>
+		<img alt="OTCS Execute command - execute both module and custom converter" class="otcImage" 
+			src="./images/doc-execute-both.png"  width="500" height="400" />
+		<br/>
+		<br/>
+		<h5>Execution order</h5>
+		But however, the execution order can be overridden by specifying the <b>"executionOrder:"</b> parameter as shown 
+		below -
+		<br/>
+		<br/>
+		<i>Test case: ID XE18 in <b>"${OTC_HOME}/pretest/execute"</b>.</i>
+		<br/>
+		<pre>- execute:
+    id: XE18
+    converter: otcframework.test.converter.TestConverter
+    module:
+      namespace: com.example
+    executionOrder:
+      - module
+      - converter
+    source:
+      objectPath: travelerDetailType.name
+    target:
+      objectPath: dataLists.passengerList.passenger[*].identityDocuments[*].visa
+    factoryClassName: XE18</pre>
+		<br/>
+		<br/>
+		The values for the <b>"executionOrder:"</b> parameter can be the 2 shown above only, ie. - <b>"module"</b> and
+		<b>"converter"</b>.
+		 
+		<br/>
+		<br/>
+		<br/>
+		<br/>
+	</div>
+</body>
+</html>

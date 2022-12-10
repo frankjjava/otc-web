@@ -1,0 +1,89 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+	<title>The OTC Framework overview in 1 minute</title>
+	<meta name="description" content="The OTC Framework overview in 1 minute">
+	<meta name=”robots” content="index, follow">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta charset="UTF-8">
+
+	<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+	<meta name="Date-Revision-yyyymmdd" content="20220417">
+	<meta http-equiv="Content-Language" content="en">
+
+	<script type="text/javascript" src="/js/jquery.min.js"></script>
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
+	<script type="text/javascript" src="/js/otc-child-pages.js"></script>
+
+</head>
+
+<body class="composite">
+
+	<div class="section">
+		<h3>OTC in 1 minute</h3>
+		<br /> 
+		What you would love about OTC is, there is no big learning curve. Thats because you don't have to code anything new, 
+		but rather only learn how to use the OTC script UI and compile it - no interfaces, no annotations, no lengthy manual 
+		configurations. 
+		<br/>
+		<br/> 
+		(Request for a free demo if required).
+		<br/>
+		<br/>
+		Consider an object tree as shown below. On the left side is source object tree, and, on the right side is the 
+		target object tree. And the objective is to copy values from the source to the target.
+		<br/>
+		<br/> 
+		Observe the object-path to the <b>"value"</b> field on the source-tree and the  object-path to the <b>"ptc"</b> 
+		field on the target-tree.
+		<br/>
+		<br/> 
+		<img alt="OTC in one minute - object tree" src="./images/doc-object-tree.png" width="1000" height="500" />
+		<br /> 
+		<br /> 
+		Let me represent both these object paths as shown below. 
+		<br /> 
+		<pre>from:
+  objectPath: travelers.traveler[*].anonymousTravelerMap[*,*]&lt;V&gt;.ptc.value
+to:
+  objectPath: passengerList.passenger[*].ptc</pre>
+		<br /> 
+		In the above OTC-Script fragment, the token suffixed with a <b>"[*]"</b> represents a list or an array. And the token suffixed 
+		with a <b>"[*,*]&lt;V&gt;"</b> represents a value in a key-value pair of a dictionary entry (map-entry).
+		<br /> 
+		<br /> 
+		<br /> 
+		<b>Now here we go with the <u><i>"OTC in 1 minute"</i></u> -</b>
+		<br /> 
+		<br /> 
+		<ol>
+			<li>Fire up the OTC Script editor (Refer the section on <b>"OTCS Editor"</b>)</li>
+			<li>Navigate and make your selections. </li>
+			<li>Click on <b>"Add OTCS command"</b></li>
+			<li>Repeat steps 2 and 3 for all the fields you wish to copy</b></li>			
+			<li>Click on <b>"Create File"</b> and save the file under <b>"${OTC_HOME}/unittest"</b> folder</li>
+			<li>Execute the <b>"OtcTest.java"</b> class in the <b>"otc-test"</b> project. (Refer the section on 
+				<b>"Test Project"</b> for more details).
+			</li>
+		</ol>
+		<br /> 
+		There you go - we are done !! All the object-conversion source-code is generated and executed in a jiffy !!!
+		<br /> 
+		<br /> 
+		If you navigate to the <b>"${OTC_HOME}/src"</b> folder, you will find all the generated source code files. 
+		<br /> 
+		<br /> 
+		On the whole from start-to-finish It should have taken you not more than 10 or 15 minutes to complete the above 
+		steps.  
+		<br /> 
+		<br /> 
+		<br /> 
+		<br /> 
+		<br /> 
+		<br /> 
+		<br /> 
+	</div>
+</body>
+</html>
